@@ -1,0 +1,117 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\printanswers
+\addpoints
+
+\ifprintanswers
+\pointformat{(\thepoints)}
+\else
+\pointformat{}
+\fi
+
+\begin{document}
+\header{Statistics \\ BT221}{\Large Homework 2 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question You just finished collecting data on students from three
+  different school districts, including demographics and SAT scores.  You
+  are interested in the breakdown of scores between genders and school
+  districts.  What type of plot would you use?
+    \begin{solution}
+      Grouped Line or Grouped bar chart
+    \end{solution}
+
+  \question You're interested in the relationship between a CEO's salary
+  and their company's average stock price for a data set of 100 companies.
+    \begin{parts}
+      \part You want to know the distribution of stock prices for all 100
+      companies.  What plot would you use? 
+        \begin{solution}
+          Histogram or Box plot
+        \end{solution}
+      \part  What plot would you use to compare CEO salaries and stock prices?
+        \begin{solution}
+          Scatterplot
+        \end{solution}
+    \end{parts}
+
+  \question Your company just received the results of an employee survey in
+  which they rated their job satisfaction on a scale from ``Very happy'' to
+  ``Ready to quit''. You want to know the relationship between the survey
+  responses and the employees' salary.  How would you show this?
+    \begin{solution}
+      Line chart
+    \end{solution}
+
+  \question A peer claims that women's salaries decrease with age while
+  men's salaries increase as they get older.  What plot would you use to
+  test this claim?
+    \begin{solution}
+      Scatter plot
+    \end{solution}
+
+%
+%
+% latex table generated in R 2.13.1 by xtable 1.5-6 package
+% Wed Sep 14 16:26:33 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlllrr}
+  \hline
+ & Position & Gender & Job.Satisfaction & Salary & Shares.Owned \\ 
+  \hline
+1 & CEO & Female & Satisfied & 952046.00 & 12952.00 \\ 
+  18 & VP & Male & Unhappy & 283080.00 & 783.00 \\ 
+  6 & Manager & Female & Ready to Quit & 65565.00 & 1705.00 \\ 
+  9 & Manager & Female & Ready to Quit & 89142.00 & 1579.00 \\ 
+  2 & Employee & Male & Ready to Quit & 41004.00 & 471.00 \\ 
+  3 & Employee & Male & Ready to Quit & 52014.00 & 541.00 \\ 
+  4 & Employee & Male & Ready to Quit & 48230.00 & 448.00 \\ 
+  5 & Employee & Male & Ready to Quit & 67434.00 & 656.00 \\ 
+  7 & Employee & Male & Ready to Quit & 61309.00 & 606.00 \\ 
+  8 & Employee & Female & Ready to Quit & 32798.00 & 1170.00 \\ 
+  10 & Employee & Male & Ready to Quit & 36931.00 & 556.00 \\ 
+  11 & Employee & Male & Ready to Quit & 43624.00 & 671.00 \\ 
+  12 & Employee & Male & Ready to Quit & 46810.00 & 377.00 \\ 
+  13 & Employee & Male & Ready to Quit & 63888.00 & 709.00 \\ 
+  14 & Employee & Female & Ready to Quit & 37368.00 & 1140.00 \\ 
+  15 & Employee & Female & Ready to Quit & 36996.00 & 1074.00 \\ 
+  16 & Employee & Female & Ready to Quit & 37017.00 & 935.00 \\ 
+  17 & Employee & Male & Ready to Quit & 47615.00 & 549.00 \\ 
+  19 & Employee & Female & Ready to Quit & 25523.00 & 1158.00 \\ 
+  20 & Employee & Female & Ready to Quit & 31771.00 & 1013.00 \\ 
+   \hline
+\end{tabular}
+\caption{Employee Data Set}
+\label{tab:employees}
+\end{center}
+\end{table}%
+
+All of the remaining questions refer to the data in
+Table~\ref{tab:employees}.
+
+  \question Create a histogram showing the distribution of shares owned by
+  the employees.
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+\includegraphics{HW3-histshares}
+  \end{center}
+  \caption{Histogram of shares owned}
+  \label{fig:one}
+\end{figure}
+\fi
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[h][questions] \end{center}
+\fi
+
+\end{document}

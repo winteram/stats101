@@ -1,0 +1,614 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Exam II } {\ifprintanswers \textbf{Answer Key} \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Exam II }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1
+
+<<label=PIR,echo=FALSE>>=
+Value <- c(0.01,0.10,0.15,0.25,0.35,0.45,0.50,0.6,0.7,0.8,0.85,0.90,0.95,0.99,1.00)
+randvals <- sample(2:10,11,replace=TRUE)
+while(sum(randvals)>45) {
+    randvals <- sample(2:10,11,replace=TRUE)
+  }
+Frequency <- c(1,47-sum(randvals),randvals,1,1)
+write.csv(data.frame(Value,Frequency),'data/PIR_UNIQUEKEY.csv')
+@ 
+%
+
+  \question On the game show, ``The Price is Right'', each contestant spins
+  a wheel at the end of their turn, trying to get as close to a dollar
+  \emph{without going over}.  Table~\ref{tab:pir} shows how many
+  times each value appears on one of the 50 segments on the wheel.
+  \begin{parts}
+    \part[10] What is the expected value of a single spin?
+    \begin{solutionordottedlines}[0.3in]
+<<label=EVpir,echo=FALSE>>=
+sum(Frequency*Value/50)
+@       
+    \end{solutionordottedlines}
+    \bonuspart[4] Suppose you got \$0.50 on your first spin.  Given that
+    you would lose if the sum of your spins is greater than \$1.00, should
+    you spin again? Why or why not?
+    \begin{solutionordottedlines}[0.3in]
+<<label=EVpir,echo=FALSE>>=
+if(sum(Frequency*Value/50)>0.5){
+  print("no")
+  } else {
+    print("yes")
+  }
+@       
+    \end{solutionordottedlines}
+  \end{parts}
+
+<<label=PIRtable,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Value,Frequency), caption = "Value and number of times value appears on wheel", label = "tab:pir", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+@ 
+%
+
+
+%%%%%%%%  Problem 2
+
+<<label=coin,echo=FALSE>>=
+  p <- sample(650:850,1)/1000
+  n <- sample(5:10,1)
+  k1 <- n - 2
+  k2 <- sample(5:10,1)
+  k3 <- sample(5:10,1)
+@ 
+
+\question James Bond is held captive by the evil Dr.~No.  Dr.~No offers
+Mr.~Bond a chance to escape, if the fates deem him worthy by beating the
+odds of a coin toss.  Unbeknownst to Dr.~No, James has a trick coin that's
+biased to turn up heads 
+<<label=coinP,echo=FALSE,results=tex>>=
+cat(p*1000)
+@ 
+ times out of 1000 tosses.
+\begin{parts}
+\part[5] For the first challenge, Mr.~Bond must get exactly 
+<<label=coinK1,echo=FALSE,results=tex>>=
+cat(k1)
+@ 
+ heads in 
+<<label=coinN,echo=FALSE,results=tex>>=
+cat(n)
+@ 
+ tosses.  What is the probability James Bond will make it past the first
+challenge?
+\begin{solutionordottedlines}[0.3in]
+<<label=coinP1,echo=FALSE>>=
+p1 <- pbinom(k1, size=n, prob=p)
+cat(p1)
+@ 
+\end{solutionordottedlines}
+\part[5] For the second challenge, Mr.~Bond must turn up at least one
+\emph{tail} in 
+<<label=coinK2,echo=FALSE,results=tex>>=
+cat(k3)
+@ 
+ tosses. What is the probability James Bond will make it past the second
+challenge?
+\begin{solutionordottedlines}[0.3in]
+<<label=coinP2,echo=FALSE>>=
+p2 <- 1 - p^k3
+cat(p2)
+@ 
+\end{solutionordottedlines}
+\newpage
+\part[5] For the final challenge, Mr.~Bond must turn up his first \emph{tail} on
+toss
+<<label=coinK2,echo=FALSE,results=tex>>=
+cat(k2)
+@ 
+ and no earlier. What is the probability James Bond will make it past the final
+challenge?
+\begin{solutionordottedlines}[0.3in]
+<<label=coinP3,echo=FALSE>>=
+p3 <- p^(k2-1)*(1-p)
+cat(p3)
+@ 
+\end{solutionordottedlines} 
+\bonuspart[5] What is the probability James will pass all
+three challenges?  
+\begin{solutionordottedlines}[0.3in]
+<<label=coinP1,echo=FALSE>>=
+cat(p1*p2*p3)
+@ 
+\end{solutionordottedlines}
+\end{parts}
+
+
+%%%%%%%%  Problem 3
+
+\question[3] You're planning a study on the differences between men and
+women's preferences for cats versus dogs as pets.  You go door-to-door and
+you want to save time and money, so if a man answers, you try to also ask
+his wife, or if a woman answers you also ask her husband.  Is this a random sample?
+Why or why not?
+\begin{solutionordottedlines}[0.5in]
+No, because husbands and wives are not independent samples
+\end{solutionordottedlines}
+
+
+%%%%%%%%  Problem 4
+
+\question[3] You've just taken a poll of attitudes towards Herman Cain,
+asking 400 people to rate their likelihood of voting for him on a scale
+from 1 to 10.  Pretend this is a continuous variable.  The average rating
+in your sample is
+<<label=CainRating,echo=FALSE,results=tex>>=
+rating <- sample(30:80,1)/10
+cat(rating)
+@ 
+ and the sample standard deviation is 
+<<label=CainRating,echo=FALSE,results=tex>>=
+rating.sd <- sample(20:40,1)/10
+cat(rating.sd)
+@ 
+.  What is the margin of error? \emph{hint: this is the average +/- the
+  standard error}
+\begin{solutionordottedlines}[0.3in]
+<<label=CainRating,echo=FALSE,results=tex>>=
+cat(paste(rating," +/- ",rating.sd/20))
+@ 
+\end{solutionordottedlines}
+
+
+%%%%%%%%  Problem 5
+
+<<label=coin,echo=FALSE>>=
+height <- sample(8200:8700,1)
+height.sd <- sample(3000:3500,1)
+@ 
+
+  \question You want to know if Mt.~Everest is significantly taller than
+  the tallest mountains in U.S.  You take a random sample of 30 of the 100
+  tallest mountains in the U.S. and find their height above sea level.  The
+  average is
+<<label=everestht,echo=FALSE,results=tex>>=
+cat(height)
+@ 
+m with a standard deviation of
+<<label=everestsd,echo=FALSE,results=tex>>=
+cat(height.sd)
+@ 
+m. Mt.~Everest is 8,848m above sea level.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        Mt.~Everest is not significantly taller than mountains in the U.S.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        Mt.~Everest is significantly taller than mountains in the U.S.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        One-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+<<label=everestcritt,echo=FALSE,results=tex>>=
+  cat(qt(0.95,df=24))
+@ 
+      \end{solutionordottedlines}
+      \part[5] For a Type I error rate of 0.05, what is the confidence interval?
+      \begin{solutionordottedlines}[0.3in]
+<<label=everestcritt,echo=FALSE,results=tex>>=
+  se <- abs(qt(0.05,df=29)*(height.sd/sqrt(29)))
+  cat(paste("(",round(height-se,2),",",round(height+se,2),")"))
+@ 
+      \end{solutionordottedlines}
+      \part[10] What is the t-value for Mt.~Everest relative to the sample
+      of U.S. mountains?
+      \begin{solutionordottedlines}[0.3in]
+<<label=everestt,echo=FALSE,results=tex>>=
+  t.height <- (8848 - height)/(height.sd/29)
+  print(t.height)
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=everestreject,echo=FALSE,results=tex>>=
+  p.height <- (1 - pt(t.height,df=29))
+  noquote(ifelse(p.height<0.05,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+  \end{parts}
+
+
+
+%%%%%%%%  Problem 6
+
+<<label=adcmpgn,echo=FALSE>>=
+Period.1 <- round(qnorm(sample(1:10000,8)/10000,55,8),0)
+Period.2 <- round(qnorm(sample(1:10000,8)/10000,58,8),0)
+diff <- Period.2 - Period.1
+while(max(Period.1)>100 | max(Period.2)>100)
+  {
+    Period.1 <- round(qnorm(sample(1:10000,47)/10000,62,8),2)
+    Period.2 <- round(qnorm(sample(1:10000,51)/10000,58,8),2)
+  }
+
+t.diff <- mean(diff)/(sd(diff)/sqrt(length(Period.1)))
+Period.t <- t.test(Period.1,Period.2,paired=T)
+p.diff <- Period.t$p.value
+write.csv(data.frame(Period.1,Period.2),'data/Ad6_UNIQUEKEY.csv')
+@ 
+%
+<<label=adcmpgntable,echo=FALSE,results=tex>>=
+print(xtable(data.frame(Period.1,Period.2), caption = "Visits to website by
+each member of the sample, in the first two-week period and the second (ad
+campaign) two-week period.", label = "tab:adcmpgn", table.placement = "ht", caption.placement = "top"))
+@ 
+
+\question Over a two-week period, you measure how often a selected small
+sample of test users visit your website.  You then start an online ad
+campaign, and measure how often those same users visit your website.  The
+number of visits by the users in the first and second 2-week period are
+shown in Table~\ref{tab:adcmpgn}. You want to know if the ad campaign had any
+effect on your sample.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no significant change before and after the ad campaign.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There was a significant change after the ad campaign.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adcmpgncritt,echo=FALSE,results=tex>>=
+  cat(paste("one-tailed: ",qt(0.05,df=7),"; two-tailed: ",qt(0.025,df=7)))
+@ 
+      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adcmpgnt,echo=FALSE,results=tex>>=
+  print(t.diff)
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adcmpgnreject,echo=FALSE,results=tex>>=
+  cat(p.diff)
+  noquote(ifelse(p.diff<0.05,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+  \end{parts}
+
+\newpage
+%%%%%%%%  Problem 7
+
+<<label=adexp,echo=FALSE>>=
+Ad.1 <- round(qnorm(sample(1:10000,44)/10000,62,8),2)
+Ad.2 <- round(qnorm(sample(1:10000,48)/10000,58,8),2)
+while(max(Ad.1)>100 | max(Ad.2)>100)
+  {
+    Ad.1 <- round(qnorm(sample(1:10000,44)/10000,62,8),2)
+    Ad.2 <- round(qnorm(sample(1:10000,48)/10000,58,8),2)
+  }
+Ad.t <- t.test(Ad.1,Ad.2,alternative="two.sided",var.equal=T)
+#write.csv(data.frame(c(Ad.1,Ad.2),'data/Ad7_UNIQUEKEY.csv')
+@ 
+
+\question For your next ad campaign, you recruit visitors to your site and
+randomly assign them to see one ad or another ad.  The 44 visitors who saw
+the first ad came to your site
+<<label=adexpht,echo=FALSE,results=tex>>=
+cat(round(mean(Ad.1),2))
+@ 
+ times on average over the next 2 weeks,
+with a standard deviation of 
+<<label=adexpht,echo=FALSE,results=tex>>=
+cat(round(sd(Ad.1),2))
+@ 
+ visits. The 48 visitors who saw the second
+ad came to your site 
+<<label=adexpht,echo=FALSE,results=tex>>=
+cat(round(mean(Ad.2),2))
+@ 
+ times on average over the next 2 weeks, with a
+standard deviation of 
+<<label=adexpht,echo=FALSE,results=tex>>=
+cat(round(sd(Ad.2),2))
+@ 
+ visits.  You want to know which ad is better, if
+either.  Assume equal variance in the population.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no difference in the number of visits for those who saw Ad
+        1 and Ad 2.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is a difference in the number of visits for those who saw Ad
+        1 and Ad 2.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adexpcritt,echo=FALSE,results=tex>>=
+  cat(qt(0.975,df=95))
+@ 
+      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adexpt,echo=FALSE,results=tex>>=
+  print(Ad.t$statistic)
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adexpreject,echo=FALSE,results=tex>>=
+  cat(Ad.t$p.value)
+  noquote(ifelse(Ad.t$p.value<0.05,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solutionordottedlines}[0.3in]
+<<label=adexpreject,echo=FALSE,results=tex>>=
+  cat(Ad.t$p.value)
+  noquote(ifelse(Ad.t$p.value<0.01,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+  \end{parts}
+
+
+
+%%%%%%%%  Problem 8
+
+<<label=oil,echo=FALSE>>=
+Tundra <- round(qnorm(sample(1:10000,45)/10000,200,50),2)
+Icy.Plain <- round(qnorm(sample(1:10000,45)/10000,250,90),2)
+while(max(Tundra)>1000 | max(Icy.Plain)>1000)
+  {
+    Tundra <- round(qnorm(sample(1:10000,45)/10000,200,50),2)
+    Icy.Plain <- round(qnorm(sample(1:10000,45)/10000,250,90),2)
+  }
+OilFields.t <- t.test(Tundra,Icy.Plain,alternative="two.sided")
+write.csv(data.frame(Tundra, Icy.Plain),'data/Oil_UNIQUEKEY.csv')
+@ 
+
+\question A geologist is given the task of exploring for more oil.  She is
+fairly confident one area of tundra has oil buried beneath it, but is
+wondering whether the icy plain a few hundred kilometers away might also
+contain oil.  She takes 46 measurements of the oil deposits in each
+location.  In the tundra, she found an average of 
+<<label=oil1mean,echo=FALSE,results=tex>>=
+cat(round(mean(Tundra),2))
+@ 
+ liters of oil, with a standard deviation of 
+<<label=oil1sd,echo=FALSE,results=tex>>=
+cat(round(sd(Tundra),2))
+@ 
+ liters. In the icy plain she found an average of
+<<label=oilht,echo=FALSE,results=tex>>=
+cat(round(mean(Icy.Plain),2))
+@ 
+ liters, with a
+standard deviation of 
+<<label=oilht,echo=FALSE,results=tex>>=
+cat(round(sd(Icy.Plain),2))
+@ 
+ liters.  Because the types of earth are so different in the different
+ locations, she cannot assume the variability will be the same.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no difference in the oil deposits between the tundra and
+        the icy plain
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is a difference in the number of oil deposits between the
+        tundra and the icy plain.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilcritt,echo=FALSE,results=tex>>=
+  cat(qt(0.025,df=88))
+@ 
+      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilt,echo=FALSE,results=tex>>=
+  print(OilFields.t$statistic)
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilreject,echo=FALSE,results=tex>>=
+  cat(OilFields.t$p.value)
+  noquote(ifelse(OilFields.t$p.value<0.05,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilreject,echo=FALSE,results=tex>>=
+  cat(OilFields.t$p.value)
+  noquote(ifelse(OilFields.t$p.value<0.01,"Yes","No"))
+@ 
+      \end{solutionordottedlines}
+  \end{parts}
+
+
+%%%%%%%%  Problem 9
+
+
+%
+<<label=college,echo=FALSE>>=
+  College.df <- data.frame(Types=sample(c("Arts","Engineering","Law","Medicine","Sciences","Social Work"),100, replace=TRUE,p=c(0.2,0.1,0.2,0.1,0.2,0.2)))
+  Colleges <- table(College.df)
+  college.chi <- chisq.test(Colleges)
+  write.csv(Colleges,'data/Colleges_UNIQUEKEY.csv')
+@ 
+
+  \question The orientation program at your university is meant to attract
+  students from every college in the school.  The organizers took a survey
+  of 100 students that attended the oritentation, and Table~\ref{tab:college}
+  shows how many came from each college. 
+  \begin{parts}
+    \part[1] What is the null hypothesis?
+    \begin{solutionordottedlines}[0.3in]
+      All colleges attended equally
+    \end{solutionordottedlines}
+    \part[1] What is the alternative hypothesis?
+    \begin{solutionordottedlines}[0.3in]
+      At least one college attended more than the others
+    \end{solutionordottedlines}
+    \part[10] What is the chi-squared statistic for these figures?
+    \begin{solutionordottedlines}[0.3in]
+<<label=collegechi,echo=FALSE,results=tex>>=
+print(college.chi)
+@ 
+    \end{solutionordottedlines}
+    \part[2] How many degrees of freedom are there?
+    \begin{solutionordottedlines}[0.3in]
+<<label=collegechi,echo=FALSE,results=tex>>=
+      noquote(length(Colleges) - 1)
+@ 
+    \end{solutionordottedlines}
+    \part[2] What is the critical chi-squared value for Type I error rate = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+<<label=collegecritt,echo=FALSE,results=tex>>=
+  cat(qchisq(0.95,df=(length(Colleges)-1)))
+@ 
+    \end{solutionordottedlines}
+    \part[2] Can you reject the null hypothesis with a Type I error rate = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+<<label=collegecritt,echo=FALSE,results=tex>>=
+  cat(college.chi$p.value)
+  noquote(ifelse(college.chi$p.value<0.05,"Yes","No"))
+@ 
+    \end{solutionordottedlines}
+  \end{parts}
+
+
+<<label=college2table,echo=FALSE,results=tex>>=
+print(xtable(Colleges, caption = "Orientation Attendance by College", label = "tab:college", table.placement = "ht", caption.placement = "top"))
+@ 
+
+   
+
+%%%%%%%%  Problem 10
+
+%
+<<label=futures,echo=FALSE>>=
+  rho <- -0.69
+  zF <- sort(sample(rnorm(10000),7),decreasing=TRUE)
+  zC <- rho*zF + sqrt( 1 - rho^2 )*sample(rnorm(10000),7)
+  Futures <- round(zF * 3 + 8,0)
+  Commodity <- round(zC * 5 + 12,0)
+  while(min(Futures)<0 | min(Commodity) < 0 | floor(mean(Futures)) != mean(Futures) | floor(mean(Commodity)) != mean(Commodity))
+  {
+    zF <- sort(sample(rnorm(10000),7),decreasing=TRUE)
+    zC <- rho*zF + sqrt( 1 - rho^2 )*sample(rnorm(10000),7)
+    Futures <- round(zF * 3 + 8,0)
+    Commodity <- round(zC * 5 + 12,0)
+  }
+  Commodity.Name <- c("Oil","Gold","Corn","Sorgham","Soy","Steel","Pork Bellies")
+  gp.lm <- lm(Commodity ~ Futures)
+  write.csv(data.frame(Commodity.Name, Futures,Commodity),'data/Futures_UNIQUEKEY.csv')
+@ 
+
+  \question You're interested in how well the prices of a commodity in a
+  futures market predict the prices of the commodity after a year.  The
+  prices of the commodity in the futures market, and of the actual
+  commodity are shown in Table \ref{tab:futures}.
+    \begin{parts}
+      \part[5] What is the correlation coefficient between the futures
+      prices and the commodity prices?
+      \begin{solutionordottedlines}[0.3in]
+<<label=futurescor,echo=FALSE,results=tex>>=
+  future.R <- cor(Futures, Commodity)
+  print(future.R)
+@ 
+      \end{solutionordottedlines}
+    \part[5] Calculate the t-value for the correlation
+      \begin{solutionordottedlines}[0.3in]
+<<label=futurest,echo=FALSE>>=
+  print(future.R*sqrt(5)/sqrt(1-future.R^2))
+@ 
+      \end{solutionordottedlines}
+    \part[4] Are the variables siginificantly correlated at the 5\% Type I
+    error rate?
+      \begin{solutionordottedlines}[0.3in]
+<<label=futurest,echo=FALSE>>=
+  print(dt(future.R*sqrt(5)/sqrt(1-future.R^2),5)*2)
+@ 
+      \end{solutionordottedlines}
+      \bonuspart[5] What would be the expected commodity price a year later if
+      its current futures price is 
+<<label=futurespredval,echo=FALSE,results=tex>>=
+future.pred <- sample(4:12,1)
+while(future.pred %in% Futures)
+{
+  future.pred <- sample(4:12,1)
+}
+cat(future.pred)
+@ 
+?
+      \begin{solutionordottedlines}[0.3in]
+<<label=futurespred,echo=FALSE,results=tex>>=
+  print(gp.lm$coefficients["Futures"] * future.pred + gp.lm$coefficients["(Intercept)"])
+@ 
+      \end{solutionordottedlines}
+    \end{parts}
+
+%
+<<label=futures2table,echo=FALSE,results=tex>>=
+print(xtable(data.frame(Commodity.Name, Futures, Commodity), caption = "Prices of a commodity in the futures market and its price a year later", label = "tab:futures", table.placement = "ht", caption.placement = "top"))
+@ 
+%    
+
+\end{questions}
+
+\begin{center} \gradetable[v][questions] \end{center}
+
+\end{document}

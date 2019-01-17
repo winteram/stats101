@@ -1,0 +1,487 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Exam II } {\ifprintanswers \textbf{Answer Key} \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Exam II }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1
+
+%
+
+  \question On the game show, ``The Price is Right'', each contestant spins
+  a wheel at the end of their turn, trying to get as close to a dollar
+  \emph{without going over}.  Table~\ref{tab:pir} shows how many
+  times each value appears on one of the 50 segments on the wheel.
+  \begin{parts}
+    \part[10] What is the expected value of a single spin?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 0.539
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \bonuspart[4] Suppose you got \$0.50 on your first spin.  Given that
+    you would lose if the sum of your spins is greater than \$1.00, should
+    you spin again? Why or why not?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] "no"
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+  \end{parts}
+
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Tue Nov  8 01:22:38 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rr}
+  \hline
+Value & Frequency \\ 
+  \hline
+0.01 & 1.00 \\ 
+  0.10 & 3.00 \\ 
+  0.15 & 3.00 \\ 
+  0.25 & 4.00 \\ 
+  0.35 & 5.00 \\ 
+  0.45 & 8.00 \\ 
+  0.50 & 5.00 \\ 
+  0.60 & 2.00 \\ 
+  0.70 & 5.00 \\ 
+  0.80 & 2.00 \\ 
+  0.85 & 2.00 \\ 
+  0.90 & 5.00 \\ 
+  0.95 & 3.00 \\ 
+  0.99 & 1.00 \\ 
+  1.00 & 1.00 \\ 
+   \hline
+\end{tabular}
+\caption{Value and number of times value appears on wheel}
+\label{tab:pir}
+\end{center}
+\end{table}%
+
+
+%%%%%%%%  Problem 2
+
+
+\question James Bond is held captive by the evil Dr.~No.  Dr.~No offers
+Mr.~Bond a chance to escape, if the fates deem him worthy by beating the
+odds of a coin toss.  Unbeknownst to Dr.~No, James has a trick coin that's
+biased to turn up heads 
+830 times out of 1000 tosses.
+\begin{parts}
+\part[5] For the first challenge, Mr.~Bond must get exactly 
+4 heads in 
+6 tosses.  What is the probability James Bond will make it past the first
+challenge?
+\begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+0.2712775
+\end{Soutput}
+\end{Schunk}
+\end{solutionordottedlines}
+\part[5] For the second challenge, Mr.~Bond must turn up at least one
+\emph{tail} in 
+5 tosses. What is the probability James Bond will make it past the second
+challenge?
+\begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+0.6060959
+\end{Soutput}
+\end{Schunk}
+\end{solutionordottedlines}
+\newpage
+\part[5] For the final challenge, Mr.~Bond must turn up his first \emph{tail} on
+toss
+9 and no earlier. What is the probability James Bond will make it past the final
+challenge?
+\begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+0.03828897
+\end{Soutput}
+\end{Schunk}
+\end{solutionordottedlines} 
+\bonuspart[5] What is the probability James will pass all
+three challenges?  
+\begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+0.006295479
+\end{Soutput}
+\end{Schunk}
+\end{solutionordottedlines}
+\end{parts}
+
+
+%%%%%%%%  Problem 3
+
+\question[3] You're planning a study on the differences between men and
+women's preferences for cats versus dogs as pets.  You go door-to-door and
+you want to save time and money, so if a man answers, you try to also ask
+his wife, or if a woman answers you also ask her husband.  Is this a random sample?
+Why or why not?
+\begin{solutionordottedlines}[0.5in]
+No, because husbands and wives are not independent samples
+\end{solutionordottedlines}
+
+
+%%%%%%%%  Problem 4
+
+\question[3] You've just taken a poll of attitudes towards Herman Cain,
+asking 400 people to rate their likelihood of voting for him on a scale
+from 1 to 10.  Pretend this is a continuous variable.  The average rating
+in your sample is
+5.5 and the sample standard deviation is 
+2.  What is the margin of error? \emph{hint: this is the average +/- the
+  standard error}
+\begin{solutionordottedlines}[0.3in]
+5.5  +/-  0.1\end{solutionordottedlines}
+
+
+%%%%%%%%  Problem 5
+
+
+  \question You want to know if Mt.~Everest is significantly taller than
+  the tallest mountains in U.S.  You take a random sample of 30 of the 100
+  tallest mountains in the U.S. and find their height above sea level.  The
+  average is
+8340m with a standard deviation of
+3371m. Mt.~Everest is 8,848m above sea level.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        Mt.~Everest is not significantly taller than mountains in the U.S.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        Mt.~Everest is significantly taller than mountains in the U.S.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        One-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+1.710882      \end{solutionordottedlines}
+      \part[5] For a Type I error rate of 0.05, what is the confidence interval?
+      \begin{solutionordottedlines}[0.3in]
+( 7276.38 , 9403.62 )      \end{solutionordottedlines}
+      \part[10] What is the t-value for Mt.~Everest relative to the sample
+      of U.S. mountains?
+      \begin{solutionordottedlines}[0.3in]
+[1] 4.370217      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+[1] Yes      \end{solutionordottedlines}
+  \end{parts}
+
+
+
+%%%%%%%%  Problem 6
+
+%
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Tue Nov  8 01:22:39 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrr}
+  \hline
+ & Period.1 & Period.2 \\ 
+  \hline
+1 & 61.00 & 60.00 \\ 
+  2 & 57.00 & 55.00 \\ 
+  3 & 63.00 & 50.00 \\ 
+  4 & 43.00 & 62.00 \\ 
+  5 & 58.00 & 43.00 \\ 
+  6 & 54.00 & 71.00 \\ 
+  7 & 61.00 & 59.00 \\ 
+  8 & 37.00 & 64.00 \\ 
+   \hline
+\end{tabular}
+\caption{Visits to website by
+each member of the sample, in the first two-week period and the second (ad
+campaign) two-week period.}
+\label{tab:adcmpgn}
+\end{center}
+\end{table}
+\question Over a two-week period, you measure how often a selected small
+sample of test users visit your website.  You then start an online ad
+campaign, and measure how often those same users visit your website.  The
+number of visits by the users in the first and second 2-week period are
+shown in Table~\ref{tab:adcmpgn}. You want to know if the ad campaign had any
+effect on your sample.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no significant change before and after the ad campaign.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There was a significant change after the ad campaign.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+one-tailed:  -1.89457860509001 ; two-tailed:  -2.36462425159278      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+[1] 0.6868028      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+0.514308[1] No      \end{solutionordottedlines}
+  \end{parts}
+
+\newpage
+%%%%%%%%  Problem 7
+
+
+\question For your next ad campaign, you recruit visitors to your site and
+randomly assign them to see one ad or another ad.  The 44 visitors who saw
+the first ad came to your site
+63.23 times on average over the next 2 weeks,
+with a standard deviation of 
+7.26 visits. The 48 visitors who saw the second
+ad came to your site 
+58.3 times on average over the next 2 weeks, with a
+standard deviation of 
+7.71 visits.  You want to know which ad is better, if
+either.  Assume equal variance in the population.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no difference in the number of visits for those who saw Ad
+        1 and Ad 2.
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is a difference in the number of visits for those who saw Ad
+        1 and Ad 2.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+1.985251      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+       t 
+3.149369       \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+0.002220847[1] Yes      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solutionordottedlines}[0.3in]
+0.002220847[1] Yes      \end{solutionordottedlines}
+  \end{parts}
+
+
+
+%%%%%%%%  Problem 8
+
+
+\question A geologist is given the task of exploring for more oil.  She is
+fairly confident one area of tundra has oil buried beneath it, but is
+wondering whether the icy plain a few hundred kilometers away might also
+contain oil.  She takes 46 measurements of the oil deposits in each
+location.  In the tundra, she found an average of 
+206.83 liters of oil, with a standard deviation of 
+61.04 liters. In the icy plain she found an average of
+242.43 liters, with a
+standard deviation of 
+107.23 liters.  Because the types of earth are so different in the different
+ locations, she cannot assume the variability will be the same.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is no difference in the oil deposits between the tundra and
+        the icy plain
+      \end{solutionordottedlines}
+      \part[1] What is the alternative hypothesis?
+      \begin{solutionordottedlines}[0.3in]
+        There is a difference in the number of oil deposits between the
+        tundra and the icy plain.
+      \end{solutionordottedlines}
+      \part[1] Given the alternative hypothesis, should you do a one-tailed
+      or two-tailed test?
+      \begin{solutionordottedlines}[0.3in]
+        Two-tailed test
+      \end{solutionordottedlines}
+      \part[2] For a Type I error rate of 0.05, what is the critical t-value?
+      \begin{solutionordottedlines}[0.3in]
+-1.98729      \end{solutionordottedlines}
+      \part[10] What is the value of the t-test?
+      \begin{solutionordottedlines}[0.3in]
+        t 
+-1.935515       \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solutionordottedlines}[0.3in]
+0.05697862[1] No      \end{solutionordottedlines}
+      \part[2] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solutionordottedlines}[0.3in]
+0.05697862[1] No      \end{solutionordottedlines}
+  \end{parts}
+
+
+%%%%%%%%  Problem 9
+
+
+%
+
+  \question The orientation program at your university is meant to attract
+  students from every college in the school.  The organizers took a survey
+  of 100 students that attended the oritentation, and Table~\ref{tab:college}
+  shows how many came from each college. 
+  \begin{parts}
+    \part[1] What is the null hypothesis?
+    \begin{solutionordottedlines}[0.3in]
+      All colleges attended equally
+    \end{solutionordottedlines}
+    \part[1] What is the alternative hypothesis?
+    \begin{solutionordottedlines}[0.3in]
+      At least one college attended more than the others
+    \end{solutionordottedlines}
+    \part[10] What is the chi-squared statistic for these figures?
+    \begin{solutionordottedlines}[0.3in]
+	Chi-squared test for given probabilities
+
+data:  Colleges 
+X-squared = 6.08, df = 5, p-value = 0.2985    \end{solutionordottedlines}
+    \part[2] How many degrees of freedom are there?
+    \begin{solutionordottedlines}[0.3in]
+[1] 5    \end{solutionordottedlines}
+    \part[2] What is the critical chi-squared value for Type I error rate = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+11.0705    \end{solutionordottedlines}
+    \part[2] Can you reject the null hypothesis with a Type I error rate = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+0.2985122[1] No    \end{solutionordottedlines}
+  \end{parts}
+
+
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Tue Nov  8 01:22:39 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rr}
+  \hline
+ & College.df \\ 
+  \hline
+Arts &  23 \\ 
+  Engineering &  11 \\ 
+  Law &  21 \\ 
+  Medicine &  16 \\ 
+  Sciences &  15 \\ 
+  Social Work &  14 \\ 
+   \hline
+\end{tabular}
+\caption{Orientation Attendance by College}
+\label{tab:college}
+\end{center}
+\end{table}
+   
+
+%%%%%%%%  Problem 10
+
+%
+
+  \question You're interested in how well the prices of a commodity in a
+  futures market predict the prices of the commodity after a year.  The
+  prices of the commodity in the futures market, and of the actual
+  commodity are shown in Table \ref{tab:futures}.
+    \begin{parts}
+      \part[5] What is the correlation coefficient between the futures
+      prices and the commodity prices?
+      \begin{solutionordottedlines}[0.3in]
+[1] -0.7071068      \end{solutionordottedlines}
+    \part[5] Calculate the t-value for the correlation
+      \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] -2.236068
+\end{Soutput}
+\end{Schunk}
+      \end{solutionordottedlines}
+    \part[4] Are the variables siginificantly correlated at the 5\% Type I
+    error rate?
+      \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 0.09490167
+\end{Soutput}
+\end{Schunk}
+      \end{solutionordottedlines}
+      \bonuspart[5] What would be the expected commodity price a year later if
+      its current futures price is 
+12?
+      \begin{solutionordottedlines}[0.3in]
+ Futures 
+6.333333       \end{solutionordottedlines}
+    \end{parts}
+
+%
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Tue Nov  8 01:22:39 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlrr}
+  \hline
+ & Commodity.Name & Futures & Commodity \\ 
+  \hline
+1 & Oil & 11.00 & 10.00 \\ 
+  2 & Gold & 10.00 & 5.00 \\ 
+  3 & Corn & 6.00 & 20.00 \\ 
+  4 & Sorgham & 6.00 & 15.00 \\ 
+  5 & Soy & 6.00 & 14.00 \\ 
+  6 & Steel & 5.00 & 14.00 \\ 
+  7 & Pork Bellies & 5.00 & 13.00 \\ 
+   \hline
+\end{tabular}
+\caption{Prices of a commodity in the futures market and its price a year later}
+\label{tab:futures}
+\end{center}
+\end{table}%    
+
+\end{questions}
+
+\begin{center} \gradetable[v][questions] \end{center}
+
+\end{document}

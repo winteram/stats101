@@ -1,0 +1,450 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Extra Credit Assignment } {\ifprintanswers \textbf{Answer Key} \else
+  Due 12/8 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Extra Credit Assignment }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1
+
+%
+<<label=procrast,echo=FALSE>>=
+  rho <- -0.8
+  zO <- sort(sample(rnorm(10000),13),decreasing=TRUE)
+  zS <- rho*zO + sqrt( 1 - rho^2 )*sample(rnorm(10000),13)
+  Oxygen <- round(zO * 0.5 + 6,2)
+  Strength <- round(zS * 0.8 + 1,1)
+  write.csv(data.frame(Oxygen,Strength),'data/Oxy_UNIQUEKEY.csv')
+@ 
+ 
+  \question In the manufacturing process for a new material, it is believed
+  that the amount of oxygen residue is related to the ultimate tensile
+  strength of the material.  Table~\ref{tab:oxygen} shows the amount of
+  oxygen residue (in parts-per-million; PPM) in the process and the ultimate
+  tensile strength (in giga-pascals; GPa) for the material in 13 different
+  production runs of the material.
+    \begin{parts}
+      \part[1] What is the elementary unit in this data set?
+      \begin{solution}
+        A production run of the material
+      \end{solution}
+      \part[1] What type of variable is tensile strength?
+      \begin{solution}
+        Quantitative
+      \end{solution}
+      \part[2] What is the average tensile stength?
+      \begin{solution}
+<<label=tensmean,echo=FALSE,results=tex>>=
+  print(mean(Strength))
+@ 
+      \end{solution}
+      \part[2] What is the median oxygen residue?
+      \begin{solution}
+<<label=oxymedian,echo=FALSE,results=tex>>=
+  print(median(Oxygen))
+@ 
+      \end{solution}
+      \part[2] What is the sample variance in oxygen residue?
+      \begin{solution}
+<<label=oxyvar,echo=FALSE,results=tex>>=
+  print(var(Oxygen))
+@ 
+      \end{solution}
+      \part[2] What is the sample standard deviation for the tensile strength?
+      \begin{solution}
+<<label=tenssd,echo=FALSE,results=tex>>=
+  print(sd(Strength))
+@ 
+      \end{solution}
+      \part[1] What is the best way to plot these two variables?
+      \begin{solution}
+        Scatterplot
+      \end{solution}
+      \part[10] Show the plot of oxygen residue and tensile strength.
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=scatterOxy,fig=TRUE,echo=FALSE>>=
+library(ggplot2)
+theme_set(theme_bw())
+p <- ggplot(data.frame(Oxygen,Strength), aes(x=Oxygen,y=Strength)) + geom_point() + theme_bw()
+print(p)
+@
+  \end{center}
+  \caption{Scatterplot of Oxygen and Tensile Strength}
+  \label{fig:oxy}
+\end{figure}
+\fi
+      \part[5] What is the correlation coefficient between these variables?
+      \begin{solution}
+<<label=oxytenscor,echo=FALSE,results=tex>>=
+  r <- cor(Oxygen,Strength)
+  print(r)
+@ 
+      \end{solution}
+    \part[5] What is the t-value for the correlation?
+      \begin{solution}
+<<label=corrttest,echo=FALSE,results=tex>>=
+  t <- r * sqrt(11) / sqrt(1 - r^2)
+  print(t)
+@ 
+      \end{solution}
+      \part[1] What is the critical t-value for a two-tailed Type I error rate of 0.05?
+      \begin{solution}
+<<label=corrttest,echo=FALSE,results=tex>>=
+  print(qt(0.975,11))
+@        
+      \end{solution}
+      \part[1] Should you reject the null hypothesis that there is no
+      relationship between the variables with a two-tailed Type I error
+      rate of 0.05?
+      \begin{solution}
+<<label=corrttest,echo=FALSE,results=tex>>=
+  noquote(ifelse(abs(t)>qt(0.975,11),"Reject","Do not reject"))
+@        
+      \end{solution}
+      \part[5] What is the predicted tensile strength for a material
+      generated in a run with 
+<<label=oxyval,echo=FALSE,results=tex>>=
+cat(Oxygen[8])
+@ 
+ppm of oxygen residue?
+      \begin{solution}
+<<label=oxyreg,echo=FALSE,results=tex>>=
+  to.lm <- lm(Strength ~ Oxygen)
+  print(to.lm$coefficients["Oxygen"] * Oxygen[8] + to.lm$coefficients["(Intercept)"])
+@ 
+      \end{solution}
+      \part[2] What is the residual for the data point with 
+<<label=oxyval,echo=FALSE,results=tex>>=
+cat(Oxygen[8])
+@ 
+      ppm of oxygen residue?
+      \begin{solution}
+<<label=oxyval,echo=FALSE,results=tex>>=
+cat(to.lm$residuals[8])
+@ 
+      \end{solution}        
+  
+    \end{parts}
+
+
+%
+<<label=oxytable,echo=FALSE,results=tex>>=
+  library(xtable)
+  print(xtable(data.frame(Oxygen,Strength), caption = "Oxygen residue (in ppm) and tensile strength (in GPa) for different production runs", label = "tab:oxygen", table.placement = "ht", caption.placement = "top"))
+@ 
+
+
+\newpage
+%%%%%%%%  Problem 2
+
+%
+<<label=DJIA,echo=FALSE>>=
+DJIA <- sort(round(sample(rnorm(10000,mean=-10,sd=8),25),1),decreasing=TRUE)
+write.csv(DJIA,'data/DJIA_UNIQUEKEY.csv')
+@ 
+%
+  \question You want to know if the Dow Jones has changed significantly
+  from yesterday's price.  You randomly choose 25 stocks in the Dow and
+  measure their price change from yesterday to today: \\
+<<label=DJIAvals,echo=FALSE,results=tex>>=
+noquote(paste(DJIA,collapse=", "))
+@ 
+%
+  \begin{parts}
+    \part[1] What is an elementary unit in this data set?
+    \begin{solution}
+      Stocks in the DJIA
+    \end{solution}
+    \part[10] Plot a histogram of the change in value for the 25 stocks,
+    binning by 5 points.
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=histshares,fig=TRUE,echo=FALSE>>=
+library(ggplot2)
+theme_set(theme_bw())
+p <- ggplot(data.frame(DJIA), aes(x=DJIA)) + geom_histogram(fill="white",color="black",binwidth=5) + theme_bw()
+print(p)
+@
+  \end{center}
+  \caption{Histogram of price changes}
+  \label{fig:histshares}
+\end{figure}
+\fi
+    \part[1] What is the critical t-value for two-tailed Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=DJIAcritt,echo=FALSE,results=tex>>=
+  print(qt(0.975,df=24))
+@ 
+      \end{solution}
+      \part[2] What is the (two-tailed) 95\% confidence interval around the mean?
+      \begin{solution}
+<<label=DJIAcritt,echo=FALSE,results=tex>>=
+  se <- abs(qt(0.975,df=24))*(sd(DJIA)/5)
+  print(se)
+  noquote(paste("(",round(mean(DJIA)-se,2),",",round(mean(DJIA)+se,2),")"))
+@ 
+      \end{solution}
+      \part[5] What is the t-value for the change in price?
+      \begin{solution}
+<<label=DJIAcritt,echo=FALSE,results=tex>>=
+  t.smart <- (mean(DJIA))/(sd(DJIA)/5)
+  print(t.smart)
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=DJIAcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(abs(t.smart)>qt(0.975,df=24),"Yes, reject","No, do not reject"))
+@ 
+      \end{solution}
+  \end{parts}
+
+
+%%%%%%%%  Problem 3
+
+%
+<<label=orgs,echo=FALSE>>=
+  NGO <- sort(round(sample(rnorm(10000),10) * 8 + 35,1),decreasing=T)
+  Corp <- sort(round(sample(rnorm(10000),15) * 8 + 50,1),decreasing=T)
+  Gov <- sort(round(sample(rnorm(10000),10) * 4 + 40,1),decreasing=T)
+  vest <- data.frame(c(rep("NGO",10),rep("Corp",15),rep("Gov",10)),c(NGO,Corp,Gov))
+  names(vest) <- c("Organization","Benefits")
+  write.csv(vest,'data/Orgs_UNIQUEKEY.csv')
+@ 
+
+\question You want to know if different types of organizations offer
+significantly different benefits from each other.  The average cash value
+of benefits for 10 randomly sampled NGOs is \$~
+<<label=NGOmean,echo=FALSE,results=tex>>=
+cat(round(mean(NGO),2))
+@ 
+ with a standard deviation of \$~
+<<label=NGOsd,echo=FALSE,results=tex>>=
+cat(round(sd(NGO),2))
+@ 
+. Based on 15 random corporations, the typical benefits offered by
+corporations averages \$~
+<<label=bondmean,echo=FALSE,results=tex>>=
+cat(round(mean(Corp),2))
+@ 
+ with a standard deviation of \$~
+<<label=bondsd,echo=FALSE,results=tex>>=
+cat(round(sd(Corp),2))
+@ 
+. A random sample of 10 governmental agencies offer an average of \$~
+<<label=mutualmean,echo=FALSE,results=tex>>=
+cat(round(mean(Gov),2))
+@ 
+ in benefits with a standard deviation of \$~
+<<label=mutualsd,echo=FALSE,results=tex>>=
+cat(round(sd(Gov),2))
+@ 
+.
+
+\begin{parts}
+  \part[4] What are the variables in this data set, and what kind of
+  variables are they?
+  \begin{solution}
+    Organization type: Categorical\\
+    Benefits offered: Quantitative
+  \end{solution}
+  \part[5] What is the overall average benefits offered across all
+  organization types?
+  \begin{solution}
+<<label=grandmean,echo=FALSE,results=tex>>=
+  gm <- mean(vest$Benefits)
+  print(gm)
+@ 
+  \end{solution}
+  \part[5] What is the between-groups mean squared error?
+  \begin{solution}
+<<label=ssb,echo=FALSE,results=tex>>=
+  MSB <- (length(NGO)*(mean(NGO)-gm)^2 + length(Corp)*(mean(Corp)-gm)^2 +length(Gov)*(mean(Gov)-gm)^2)/2
+  print(MSB)
+@ 
+  \end{solution}
+  \part[5] What is the within-groups mean squared error?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  MSW <- ((length(NGO)-1)*var(NGO) + (length(Corp)-1)*var(Corp) + (length(Gov)-1)*var(Gov))/(nrow(vest)-3)
+  print(MSW)
+@ 
+  \end{solution}
+  \part[2] What is the F-statistic for this analysis of variance (ANOVA)?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  print(MSB/MSW)
+@ 
+  \end{solution}
+  \part[1] What is the critical F-vaue for a Type I error rate of 0.01?
+  \begin{solution}
+<<label=vestcrit,echo=FALSE,results=tex>>=
+  print(qf(0.99,2,(nrow(vest)-3)))
+@ 
+  \end{solution}
+  \part[1] Can you reject the null hypothesis with a Type I error rate of 0.01?
+  \begin{solution}
+<<label=vestcrit,echo=FALSE,results=tex>>=
+  noquote(ifelse(MSB/MSW>qf(0.99,2,(nrow(vest)-3)),"Reject","Do not reject"))
+@ 
+  \end{solution}
+\end{parts}
+
+
+%%%%%%%%  Problem 4
+
+<<label=tab4,echo=FALSE,results=tex>>=
+
+  allstrangers <- data.frame(gender=sample(c("Female","Male"),50,replace=TRUE,p=c(0.55,0.45)))
+  allstrangers$job <- "Lawyer"
+  allstrangers[allstrangers$gender=="Male",]$job <- sample(c("Doctor","Lawyer","Engineer","Politician"),nrow(subset(allstrangers,gender=="Male")),replace=TRUE,p=c(0.2,0.1,0.4,0.3))
+  allstrangers[allstrangers$gender=="Female",]$job <- sample(c("Doctor","Lawyer","Engineer","Politician"),nrow(subset(allstrangers,gender=="Female")),replace=TRUE,p=c(0.3,0.4,0.1,0.2))
+
+while(length(unique(allstrangers$gender))<2 | length(unique(allstrangers$job))<4)
+  {
+  allstrangers <- data.frame(gender=sample(c("Female","Male"),50,replace=TRUE,p=c(0.55,0.45)))
+  allstrangers$job <- "Lawyer"
+  allstrangers[allstrangers$gender=="Male",]$job <- sample(c("Doctor","Lawyer","Engineer","Politician"),nrow(subset(allstrangers,gender=="Male")),replace=TRUE,p=c(0.2,0.1,0.4,0.3))
+  allstrangers[allstrangers$gender=="Female",]$job <- sample(c("Doctor","Lawyer","Engineer","Politician"),nrow(subset(allstrangers,gender=="Female")),replace=TRUE,p=c(0.3,0.4,0.1,0.2))
+    }
+
+  outcome <- table(allstrangers)
+  outcome2 <- addmargins(table(allstrangers))
+  expected <- as.array(margin.table(outcome,1)) %*% t(as.array(margin.table(outcome,2))) / margin.table(outcome)
+  expected2 <- outcome
+  expected2[,] <- "    "
+write.csv(outcome2,'data/Gender_UNIQUEKEY.csv')
+@ 
+
+
+%
+<<label=oxytable,echo=FALSE,results=tex>>=
+print(xtable(outcome2, caption = "Frequencies of occupations for different genders", label = "tab:gender", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c||c|",digits=0), sanitize.text.function = function(x) {x}, hline.after = c(nrow(outcome2),seq(from=-1,to=nrow(outcome2),by=1)))
+@ 
+
+
+\question A recent study took a survey of a random sample of 50 people and
+asked them what their gender was and what their occupation was.
+Table~\ref{tab:gender} shows the frequencies of occupation for each gender.
+\begin{parts}
+  \part[1] What is the modal occupation across everyone in the sample?
+  \begin{solution}
+<<label=tab2s2,results=tex,echo=FALSE>>=
+print(which.max(outcome2["Sum",1:4]))
+@ 
+  \end{solution}
+  \part[1] What is the modal occupation for women?
+  \begin{solution}
+<<label=tab2s2,results=tex,echo=FALSE>>=
+print(which.max(outcome2["Female",1:4]))
+@ 
+  \end{solution}
+  \part[4] What are the variables and what kind of variables are they?
+  \begin{solution}
+    Gender: categorical; Occupation: categorical
+  \end{solution}
+  \part[2] Based on this sample, what is the joint probability of being a man and a lawyer?
+  \begin{solution}
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.mlaw <- nrow(subset(allstrangers, gender=="Male" & job=="Lawyer"))
+paste('Number of male lawyers:',n.mlaw,'  ')
+paste('Number of people:',50,'  ')
+paste('Probability:',n.mlaw/50,'  ')
+@ 
+  \end{solution}
+  \part[2] Based on this sample, what is the marginal probability of being a doctor?
+  \begin{solution}
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.doctor <- nrow(subset(allstrangers, job=="Doctor"))
+paste('Number of doctors:',n.doctor,'  ')
+paste('Number of people:',50,'  ')
+paste('Probability:',n.doctor/50,'  ')
+@ 
+  \end{solution}
+  \part[2] Based on this sample, what is the conditional probability of
+  someone being a woman given they are a politician?
+  \begin{solution}
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.fpol <- nrow(subset(allstrangers, gender=="Female" & job=="Politician"))
+n.pol <- nrow(subset(allstrangers, job=="Politician"))
+paste('Number of female politicians:',n.fpol,'  ')
+paste('Number of politicians:',n.pol,'  ')
+paste('Probability:',n.fpol/n.pol,'  ')
+@ 
+  \end{solution}
+  \part[4] If gender and occupation were independent variables, what would
+  the expected number of people be for each combination of gender and job? 
+\ifprintanswers
+%
+<<label=oxytable,echo=FALSE,results=tex>>=
+print(xtable(expected, caption = "Expected frequencies of occupations for different genders", label = "tab:gender2", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c|",digits=2), sanitize.text.function = function(x) {x}, hline.after = seq(from=-1,to=nrow(expected),by=1))
+@ 
+\else
+%
+<<label=oxytable,echo=FALSE,results=tex>>=
+print(xtable(expected2, caption = "Expected frequencies of occupations for different genders", label = "tab:gender2", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c|",digits=2), sanitize.text.function = function(x) {x}, hline.after = seq(from=-1,to=nrow(expected2),by=1))
+@ 
+\fi
+
+  \part[8] What is (i.e., calculate) the chi-squared statistic for the test of
+  independence of gender and occupation?
+  \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  jobs.chi <- chisq.test(outcome)
+  print(jobs.chi$statistic)
+@ 
+  \end{solution}     
+  \part[1] What are the degrees of freedom for this test?
+  \begin{solution}
+    3
+  \end{solution}
+  \part[1] What is the critical chi-squared statistic?
+  \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(qchisq(0.95,df=3))
+@ 
+  \end{solution}
+  \part[1] Is there a statistically significant relationship between
+  gender and occupation?
+  \begin{solution}
+<<label=vestcrit,echo=FALSE,results=tex>>=
+  noquote(ifelse(jobs.chi$statistic>qchisq(0.95,df=3),"Yes, significant relationship","No, no significant relationship"))
+@ 
+  \end{solution}  
+  \end{parts}
+
+
+\ifprintanswers
+\else
+\newpage
+.
+\fi
+
+\end{questions}
+
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

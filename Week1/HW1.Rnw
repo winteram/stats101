@@ -1,0 +1,219 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+
+\ifprintanswers
+\pointformat{(\thepoints)}
+\else
+\pointformat{}
+\fi
+
+\begin{document}
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 1 } {\ifprintanswers \textbf{Answer Key} \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 1 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question For each of the following data sets, say whether it
+  is primary or secondary data.
+    \begin{parts}
+      \part[2] U.S. government data on recent economic activity, by state,
+      being used by a company planning to expand.
+      \begin{solution} Secondary \end{solution}
+      \part[2] Production-cost data on recent items produced at your firm's
+      factory, collected as part of a cost-reduction effort
+      \begin{solution} Primary \end{solution}
+      \part[2] Industry survey data purchased by your company in order to see
+      how it compares to its competitors
+      \begin{solution} Secondary \end{solution}
+    \end{parts}
+
+  \question[2] If you think about a telephone directory as a
+  large data set, what are the elementary units?
+    \begin{solution} Businesses or Homes \end{solution}
+
+  \question[2] A quality control inspector has rated each
+  batch produced today on a scale from A through E, where A represents the
+  best quality and E is the worst.  Is this a quantitative, ordinal, or
+  nominal variable?
+    \begin{solution} Ordinal \end{solution}
+
+  \question[2] The newspaper shows the stock price for 35
+  different companies. Is this a quantitative, ordinal, or nominal
+  variable?
+    \begin{solution} Quantitative \end{solution}
+
+  \question[2] Suppose a database includes the variable
+  ``security type'' for which 1 = common stock, 2 = preferred stock, 3 =
+  bond, 4 = futures contract, and 5 = option.  Is this a quantitative,
+  ordinal, or nominal variable?
+    \begin{solution} Nominal \end{solution}
+
+  \question[2] The ease of assembling products is recorded using the
+    scale 1 = very easy, 2 = easy, 3 = moderate, 4 = difficult, 5 = very
+    difficult.  Is this a quantitative, ordinal, or nominal variable?
+    \begin{solution} Ordinal \end{solution}
+
+%
+<<label=sales,echo=FALSE>>=
+Purchases <- sample.int(2000000, size=11, replace=TRUE)
+Interest <- sample(c("Very Weak","Weak","Moderate","Strong","Very Strong"),size=11, replace=TRUE)
+Region <- sample(c("West","South","Midwest","Northeast","Southwest"),size=11, replace=TRUE)
+tab1 <- as.matrix(data.frame(Region,Interest,Purchases))
+@
+%
+<<label=tab1,echo=FALSE,results=tex>>=
+library(xtable)
+print(xtable(tab1, caption = "Selected Customers and Purchases", label = "tab:264", table.placement = "tbp", caption.placement = "top"))
+@ 
+%
+
+  \question Table~\ref{tab:264} is an excerpt from a
+  salesperson's database of customers.
+    \begin{parts}
+      \part[2] What is an elementary unit for this data set? 
+        \begin{solution} Customer \end{solution}
+      \part[2] How many variables are there in this data set? 
+        \begin{solution} Three \end{solution}
+      \part[2] Which of the variables are quantitative? 
+        \begin{solution} Purchases \end{solution}
+      \part[2] Which of the variables are qualitative? 
+        \begin{solution} Region, Interest \end{solution}
+      \part[2] Which of the variables are ordinal? 
+        \begin{solution} Interest \end{solution}
+      \part[2] Which of the variables are nominal? 
+        \begin{solution} Region \end{solution}
+    \end{parts}
+
+  \question Continuing to look at Table~\ref{tab:264}
+    \begin{parts}
+      \part[3] What is the modal Region? (choose one if there is a tie)
+        \begin{solution} 
+<<label=tab1s1,echo=FALSE>>=
+table(Region)
+@ 
+        \end{solution}
+      \part[3] What is the modal Interest? (choose one if there is a tie)
+        \begin{solution} 
+<<label=tab1s1,echo=FALSE>>=
+table(Interest)
+@ 
+        \end{solution}
+      \part[3] What is the median Purchase value?
+        \begin{solution} 
+<<label=tab1s2,echo=FALSE>>=
+median(Purchases)
+@ 
+        \end{solution}
+      \part[5] What is the average Purchase value?
+        \begin{solution} 
+<<label=tab1s3,echo=FALSE>>=
+mean(Purchases)
+@ 
+        \end{solution}
+    \end{parts}
+
+
+%
+<<label=vacuum,echo=FALSE>>=
+Price <- sample.int(35, size=8, replace=TRUE) * 10
+Weight <- sample.int(7, size=8, replace=TRUE) + 12
+Quality <- sample(c("Fair","Good","Excellent"),size=8, replace=TRUE)
+Type <- sample(c("Hard-body","Soft-body","Self-propelled"),size=8, replace=TRUE)
+tab2 <- as.matrix(data.frame(Price, Weight, Quality, Type))
+@
+%
+<<label=tab2,echo=FALSE,results=tex>>=
+library(xtable)
+print(xtable(tab2, caption = "Comparison of Upright Vacuums", label = "tab:266", table.placement = "tbp", caption.placement = "top"))
+@ 
+%
+
+  \question Table~\ref{tab:266} shows information on a
+  selection of household vacuum cleaners.
+    \begin{parts}
+      \part[2] What is an elementary unit for this data set?
+        \begin{solution} Vacuum \end{solution}
+      \part[2] How many variables are there in this data set? 
+        \begin{solution} Four \end{solution}
+      \part[2] Which of the variables are quantitative? 
+        \begin{solution} Price, Weight \end{solution}
+      \part[2] Which of the variables are qualitative? 
+        \begin{solution} Quality, Type \end{solution}
+      \part[2] Which of the variables are ordinal? 
+        \begin{solution} Quality \end{solution}
+      \part[2] Which of the variables are nominal? 
+        \begin{solution} Type \end{solution}
+    \end{parts}
+
+  \question Continuing to look at Table~\ref{tab:266}
+    \begin{parts}
+      \part[3] What is the modal Quality? (choose one if there is a tie)
+        \begin{solution} 
+<<label=tab2s1,echo=FALSE>>=
+table(Quality)
+@ 
+        \end{solution}
+      \part[3] What is the modal Weight? (choose one if there is a tie)
+        \begin{solution} 
+<<label=tab1s1,echo=FALSE>>=
+table(Weight)
+@ 
+        \end{solution}
+      \part[3] What is the median Weight?
+        \begin{solution} 
+<<label=tab1s2,echo=FALSE>>=
+median(Weight)
+@ 
+        \end{solution}
+      \part[3] What is the median Price?
+        \begin{solution} 
+<<label=tab1s2,echo=FALSE>>=
+median(Price)
+@
+        \end{solution}
+      \part[5] What is the average Price?
+        \begin{solution} 
+<<label=tab1s3,echo=FALSE>>=
+mean(Price)
+@ 
+        \end{solution}
+    \end{parts}
+
+
+  \question[10] Find a data set on the internet with at least 10 elementary
+  units and three variables, at least one of which is quantitative.  Go to
+  http://bit.ly/qt1L6b to see if anyone has already selected that data
+  set.  If not, go to http://bit.ly/oObGms to post your data set so no one
+  else will use it.
+    \begin{parts}
+      \part[2] What is an elementary unit for this data set? 
+      \part[2] How many variables are there in this data set?
+      \part[2] Which of the variables are quantitative? 
+      \part[2] Which of the variables are qualitative? 
+      \part[2] Which of the variables are ordinal? 
+      \part[2] Which of the variables are nominal? 
+    \end{parts}
+
+  \question Choose one of the quantitative variables in your data set and indicate the name
+    \begin{parts}
+      \part[2] Calculate the median
+      \part[5] Calculate the mean
+    \end{parts}
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[h][questions] \end{center}
+\fi
+
+\end{document}

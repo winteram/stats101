@@ -1,0 +1,717 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.3in} 
+
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+ \\ BT221}{\Large Exam 1 } {\ifprintanswers \textbf{Answer Key} \fi
+ \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Exam 1 }{\ifprintanswers
+ \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+ \question  A pharmaceutical company is mining their own sales data to
+ understand the popularity and effectiveness of different drugs being sold
+ on the market. The data set records the chemical name of the drug, the
+ commerical name of the drug, the number of purchases, the overall rank of
+ the total sales of the drug, and the average frequency of illness in the
+ drug-taking population compared to the baseline.
+ \begin{parts}
+   \part[1] Is this a primary or secondary data set?
+   \begin{solutionordottedlines}[0.3in]
+     Primary
+   \end{solutionordottedlines}
+   \part[1] What is an elementary unit in this data set?
+   \begin{solutionordottedlines}[0.3in]
+     A drug
+   \end{solutionordottedlines}
+   \part[2] How many variables are there in the data set?
+   \begin{solutionordottedlines}[0.3in]
+     Five
+   \end{solutionordottedlines}
+   \part[2] What is/are the nominal variables?
+   \begin{solutionordottedlines}[0.3in]
+     Chemical name, Commercial name
+   \end{solutionordottedlines}
+   \part[2] What is/are the ordinal variables?
+   \begin{solutionordottedlines}[0.3in]
+     Rank of sales
+   \end{solutionordottedlines}
+   \part[2] What is/are the quantitative variables?
+   \begin{solutionordottedlines}[0.3in]
+     Number of purchases, frequency of illness
+   \end{solutionordottedlines}
+ \end{parts}
+
+ \question A news agency is investigating government waste, using a data
+ set from a watchdog organization that shows the costs in U.S. dollars of
+ every government-funded project, as well as the name of the project, the
+ project's funding agency (e.g., NSF, DoD, etc.), the classification of
+ the project (e.g., military, telecom, etc.), the most recent grade
+ received from the funding agency (e.g., A--F), and the number of patents
+ arising from the project.
+ \begin{parts}
+   \part
+   \begin{subparts}
+     \subpart[1] Is this a primary or secondary data set?
+     \begin{solutionordottedlines}[0.3in]
+       Secondary
+     \end{solutionordottedlines}
+     \subpart[1] What is an elementary unit in this data set?
+     \begin{solutionordottedlines}[0.3in]
+       A government-funded project
+     \end{solutionordottedlines}
+     \subpart[2] How many variables are there in the data set?
+     \begin{solutionordottedlines}[0.3in]
+       Six
+     \end{solutionordottedlines}
+     \subpart[2] What kind of variable is the classification of the project?
+     \begin{solutionordottedlines}[0.3in]
+       Nominal
+     \end{solutionordottedlines}
+     \subpart[2] What kind of variable is the grade from the funding agency?
+     \begin{solutionordottedlines}[0.3in]
+       Ordinal
+     \end{solutionordottedlines}
+     \subpart[2] What kind of variable is the number of patents generated
+     as a result of the project?
+     \begin{solutionordottedlines}[0.3in]
+       Quantitative
+     \end{solutionordottedlines}
+   \end{subparts}
+
+   \part
+   \begin{subparts}
+     \subpart[3] What plot would you use to examine the distribution of
+     project costs?
+     \begin{solutionordottedlines}[0.3in]
+       Box plot or histogram
+     \end{solutionordottedlines}
+     \subpart[3] What plot would you use to show the average cost for each
+     type of project?
+     \begin{solutionordottedlines}[0.3in]
+       Bar chart
+     \end{solutionordottedlines}
+     \subpart[3] How would you illustrate the relationship between the
+     cost of the project and the number of patents generated?
+     \begin{solutionordottedlines}[0.3in]
+       Scatterplot
+     \end{solutionordottedlines}
+     \subpart[2] How would you modify that plot to show the costs and
+     patents for different types of projects?
+     \begin{solutionordottedlines}[0.3in]
+       Use different colors or shapes for the points in the scatterplot
+     \end{solutionordottedlines}
+     \subpart[3] How would you illustrate the relationship between the
+     grade received by the project and its cost?
+     \begin{solutionordottedlines}[0.3in]
+       Line plot
+     \end{solutionordottedlines}
+     \subpart[2] How would you modify that plot to show the costs of
+     projects in each grade level for different types of projects?
+     \begin{solutionordottedlines}[0.3in]
+       Use different colors or linetype for the lines in the line plot
+     \end{solutionordottedlines}
+   \end{subparts}
+ \end{parts}
+
+\newpage
+%
+<<label=okcupid,echo=FALSE>>=
+ID <- sample(1000:9999,20)
+days <- sample(14:1000,20, replace=TRUE)
+age <- round(sample(rnorm(10000,mean=27,sd=5),20, replace=TRUE))
+while(min(age)<18) {
+ age <- round(sample(rnorm(10000,mean=27,sd=5),20, replace=TRUE))
+}
+gender <- sample(c("Male","Female"),20,replace=TRUE)
+politics <- sample(c("Very liberal","Liberal","Moderate","Conservative","Very Conservative"),20,replace=TRUE)
+msg.sent <- sort(round(exp(sample(10:600,20)/100)),decreasing=TRUE)
+while(max(msg.sent)<quantile(msg.sent,0.75,type=1) + 1.5*(quantile(msg.sent,0.75,type=1) - quantile(msg.sent,0.25,type=1)))
+{
+ msg.sent <- sort(round(exp(sample(10:600,20)/100)),decreasing=TRUE)
+}
+
+msg.received <- sample(1:10,20,replace=TRUE)
+msg.tbl <- table(msg.received)
+while(sum(msg.tbl==msg.tbl[which.max(msg.tbl)])>1)
+{
+   msg.received <- sample(1:10,20,replace=TRUE)
+   msg.tbl <- table(msg.received)
+}
+Customers <- data.frame(ID,days,age,gender,politics,msg.sent,msg.received)
+write.csv(Customers,'data/Customers_UNIQUEKEY.csv')
+@
+%
+
+<<label=tab2,echo=FALSE,results=tex>>=
+library(xtable)
+print(xtable(Customers, caption = "Customers of a dating site", label = "tab:okcupid", table.placement = "ht", caption.placement = "top", digits=0),include.rownames=FALSE)
+@ 
+%
+
+ Table~\ref{tab:okcupid} shows data collected by a popular dating site on
+ its customers for the purpose of improving their service.
+ \question
+ \begin{parts}
+   \part[4] What is the average number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=avgsent,echo=FALSE>>=
+mean(msg.sent)
+@
+   \end{solutionordottedlines}
+   \part[2] What is the median number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=medsent,echo=FALSE>>=
+median(msg.sent)
+@
+   \end{solutionordottedlines}
+   \part[2] What is the 75th percentile of the number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent75,echo=FALSE>>=
+quantile(msg.sent,0.75,type=1)
+@
+   \end{solutionordottedlines}        
+   \part[2] What is the 25th percentile of the number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+quantile(msg.sent,0.25,type=1)
+@
+   \end{solutionordottedlines}
+   \part[1] What is the range of the number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+max(msg.sent)-min(msg.sent)
+@
+   \end{solutionordottedlines}
+   \part[1] What is the interquartile range of the number of messages sent?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+quantile(msg.sent,0.75,type=1)-quantile(msg.sent,0.25,type=1)
+@
+   \end{solutionordottedlines}
+
+\newpage
+   \part[10] Draw a boxplot of the number of messages sent, \emph{showing any
+   outliers}. Be sure to label key points in the plot, i.e., label the
+   points with their values).
+   \begin{solutionorbox}[3in]
+<<label=boxsent,fig=TRUE,echo=FALSE>>=
+ nooutlier <- msg.sent[msg.sent < quantile(msg.sent,0.75,type=1) + 1.5*(quantile(msg.sent,0.75,type=1) - quantile(msg.sent,0.25,type=1))]
+ paste('next highest value:',max(nooutlier))
+ boxplot(msg.sent)
+@
+   \end{solutionorbox}
+   \part[8] Draw a histogram of the number of messages \emph{received}
+   (not the messages sent!).  There is no need to put the values into bins
+   (in other words, the bin size should be 1).
+   \begin{solutionorbox}[3in]
+<<label=histrcvd,fig=TRUE,echo=FALSE>>=
+hist(msg.received,breaks=0:10)
+@
+   \end{solutionorbox}
+   \part[2] What is the modal number of messages \emph{received}?
+   \begin{solutionordottedlines}[0.3in]
+<<label=modrcvd,echo=FALSE>>=
+msg.tbl[which.max(msg.tbl)]
+@
+   \end{solutionordottedlines}
+ \end{parts}
+
+\newpage
+
+<<label=knicks,echo=FALSE>>=
+ Opponents <- sample(c(rep("Minnesota Timberwolves",5),rep("New Jersey Nets",5),rep("Miami Heat",5),rep("Chicago Bulls",5)),20)
+ Scores <- round(sample(rnorm(10000,mean=75,sd=10),20))
+ while(floor(mean(Scores)) != mean(Scores)) {
+   Scores <- round(sample(rnorm(10000,mean=75,sd=10),20))
+ }
+ Scores <- sort(Scores, decreasing=TRUE)
+ RP.dev <- Scores - mean(Scores)
+ RP.sqdev <- (RP.dev)^2
+ Deviation <- rep("",length(Scores))
+ Deviation2 <- rep("",length(Scores))
+ row.last.1 <- c("",mean(Scores),"",sum(RP.sqdev)) 
+ row.last.2 <- c("","","","")
+ tab3.1 <- data.frame(rbind(cbind(Opponents,Scores,RP.dev,RP.sqdev),row.last.1))
+ tab3.2 <- data.frame(rbind(cbind(Opponents,Scores,Deviation,Deviation2),row.last.2))
+ write.csv(Scores,'data/Scores_UNIQUEKEY.csv')
+@
+
+\ifprintanswers
+<<label=tab31,echo=FALSE,results=tex>>=
+ colnames(tab3.1) <- c("Opponent","Score","$Score - \\mu$","${(Score - \\mu)}^2$")
+ print(xtable(tab3.1, caption = "Scores of last 20 Knicks games", label = "tab:knicks", table.placement = "ht", caption.placement = "top", align="c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Scores),seq(from=-1,to=nrow(tab3.1),by=1)))
+@ 
+\else
+%
+<<label=tab32,echo=FALSE,results=tex>>=
+ colnames(tab3.2) <- c("Opponent","Score","","")
+ print(xtable(tab3.2, caption = "Scores of last 20 Knicks games", label = "tab:knicks", table.placement = "ht", caption.placement = "top", align="c|c|c|p{3cm}|p{3cm}|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Scores),seq(from=-1,to=nrow(tab3.2),by=1)))
+@ 
+\fi
+
+ \question As the newly-hired manager of the New York Knicks basketball
+ team, you're interested in how they have been performing recently.
+ Table~\ref{tab:knicks} shows the team's scores over the past 20 games.
+
+   \begin{parts}
+     \part[4] What is the average score?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s1,echo=FALSE>>=
+mean(Scores)
+@ 
+       \end{solutionordottedlines}
+   \part[1] What is the range of scores?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+max(msg.sent)-min(msg.sent)
+@
+   \end{solutionordottedlines}
+     \part[2] What is the median score?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s1,echo=FALSE>>=
+median(Scores)
+@ 
+       \end{solutionordottedlines}
+     \part[2] What is the 75th percentile for score?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s3,echo=FALSE>>=
+quantile(Scores,0.75,type=1)
+@ 
+       \end{solutionordottedlines}
+     \part[2] What is the 25th percentile for score?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s2,echo=FALSE>>=
+quantile(Scores,0.25,type=1)
+@ 
+       \end{solutionordottedlines}
+   \part[1] What is the interquartile range of scores?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+quantile(msg.sent,0.75,type=1)-quantile(msg.sent,0.25,type=1)
+@
+   \end{solutionordottedlines}
+   \part[5] What is the variance of scores?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,echo=FALSE>>=
+var(Scores)
+@ 
+   \end{solutionordottedlines}
+   \part[2] What is the standard deviation of scores?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s3,echo=FALSE>>=
+sd(Scores)
+@ 
+   \end{solutionordottedlines}
+   \part[3] What is the coefficient of variance for scores?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,echo=FALSE>>=
+sd(Scores) / mean(Scores)
+@ 
+   \end{solutionordottedlines}
+   \end{parts}
+
+   \question[3] What is a random variable?
+   \begin{solutionordottedlines}[0.3in]
+     A variable whose outcome is unpredictable
+   \end{solutionordottedlines}
+   \question[3] What is the sample space of a random variable?
+   \begin{solutionordottedlines}[0.3in]
+     The set of all possible outcomes
+   \end{solutionordottedlines}
+   \question[3] You're randomly flipping through the book Neuromancer by William
+   Gibson, closing your eyes and pointing at a word on the page, and
+   writing it down.  What is the sample space for this variable?
+   \begin{solutionordottedlines}[0.3in]
+     All of the words in the book.
+   \end{solutionordottedlines}
+
+%
+<<label=strangers,echo=FALSE>>=
+gender <- sort(sample(c("Male","Female"),20,replace=TRUE))
+
+females <- sample(c("Alicia","Brandy","Cindy","Danielle","Elise","Florence","Gabrielle","Hermione","Ingrid","Jasmine","Kelly","Mary","Nicole","Ophelia","Penny","Quetzal","Rachel","Sharon","Tina","Ursula","Vivian","Wendy"),length(gender[gender=="Female"]))
+
+males <- sample(c("Albert","Bob","Charlie","David","Ernest","Frank","George","Harry","Ivan","John","Keith","Lawrence","Michael","Nicholas","Oliver","Phillip","Richard","Stephen","Thomas","Victor","William","Xavier"),length(gender[gender=="Male"]))
+
+names <- c(females,males)
+age <- round(sample(rnorm(10000,mean=32,sd=8),20, replace=TRUE))
+while(floor(mean(age)) != mean(age)) {
+ age <- round(sample(rnorm(10000,mean=32,sd=8),20, replace=TRUE))
+}
+eyes <- sample(c("Brown","Black","Blue","Green"),20,replace=TRUE,p=c(0.5,0.2,0.2,0.1))
+while(length(unique(eyes)) < 4) {
+ eyes <- sample(c("Brown","Black","Blue","Green"),20,replace=TRUE,p=c(0.5,0.2,0.2,0.1))
+}
+hair <- sample(c("Brown","Blond","Black","Red"),20,replace=TRUE,p=c(0.5,0.2,0.2,0.1))
+while(length(unique(hair))<4) {
+ hair <- sample(c("Brown","Blond","Black","Red"),20,replace=TRUE,p=c(0.5,0.2,0.2,0.1))
+}
+
+Strangers <- data.frame(names,gender,age,hair,eyes,stringsAsFactors=FALSE)
+while(nrow(subset(Strangers,gender=="Female" & hair=="Brown"))<1 |  length(Strangers[Strangers$eyes=="Green" | Strangers$hair=="Black","names"])>8)
+{
+ hair <- sample(c("Brown","Blond","Black","Red"),20,replace=TRUE,p=c(0.5,0.2,0.2,0.1))
+ Strangers <- data.frame(names,gender,age,hair,eyes,stringsAsFactors=FALSE)
+}
+Strangers <- Strangers[with(Strangers,order(gender,hair,eyes)),]
+ write.csv(Strangers,'data/Strangers_UNIQUEKEY.csv')
+@
+
+<<label=tab3,echo=FALSE,results=tex>>=
+library(xtable)
+print(xtable(Strangers, caption = "Random people at Grand Central Station", label = "tab:strangers", table.placement = "ht", caption.placement = "top", digits=0),include.rownames=FALSE)
+@ 
+%
+
+   \question Table~\ref{tab:strangers} shows data collected on every tenth
+   person that walked out of Grand Central Station on a Tuesday
+   afternoon.  Assume this is a random variable.
+   \begin{parts}
+     \part[2] Is the following a subset of brown-haired people?
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set1 <- sample(c(sample(Strangers[Strangers$hair=="Brown","names"],min(3,length(Strangers[Strangers$hair=="Brown","names"]))),sample(Strangers[Strangers$hair!="Brown","names"],1)),4)
+cat(paste('\\begin{displaymath} S_1=\\left\\{',paste(set1,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+     \part[2] Is the following a subset of brown-eyed women?
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set2 <- sample(Strangers[Strangers$eyes=="Brown" & Strangers$gender=="Female","names"],min(3,length(Strangers[Strangers$eyes=="Brown" & Strangers$gender=="Female","names"])-1))
+cat(paste('\\begin{displaymath} S_2=\\left\\{',paste(set2,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+
+     \part
+     \begin{subparts}
+       \subpart[2] Is the following a subset of blue-eyed people?
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set3 <- sample(Strangers[Strangers$eyes=="Blue","names"],length(Strangers[Strangers$eyes=="Blue","names"]))
+cat(paste('\\begin{displaymath} S_3=\\left\\{',paste(set3,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+       \subpart[1] Is $S_3$ a \emph{proper} subset of blue-eyed people?
+       \begin{solutionordottedlines}[0.3in]
+         No, there are no elements in the set of blue-eyed people that are
+         not in $S_3$.
+       \end{solutionordottedlines}
+     \end{subparts}
+     \part[3] $H_{black}$ is the set of all black-haired people.  $E_{green}$ is the set of
+     all green-eyed people.  Describe (i.e., list the elements of) the
+     union: $S_4 = H_{black} \cup E_{green}$
+       \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set4 <- Strangers[Strangers$eyes=="Green" | Strangers$hair=="Black","names"]
+cat(paste('\\begin{displaymath} S_4=\\left\\{',paste(set4,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+       \end{solutionordottedlines}
+     \part[3] $G_m$ is the set of all males.  $H_{brown}$ is the set of
+     all brown-haired people.  Describe the intersection: $S_5 = G_m \cap H_{brown}$
+       \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set5 <- Strangers[Strangers$hair=="Brown" & Strangers$gender=="Male","names"]
+cat(paste('\\begin{displaymath} S_5=\\left\\{',paste(set5,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+       \end{solutionordottedlines}
+     \part[3] $G_m$ is the set of all males.  $E_{brown}$ is the set of
+     all brown-eyed people.  Describe the set difference: $S_6 = G_m - E_{brown}$
+       \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set6 <- Strangers[Strangers$eyes!="Brown" & Strangers$gender=="Male","names"]
+cat(paste('\\begin{displaymath} S_6=\\left\\{',paste(set6,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+       \end{solutionordottedlines}
+     \part[3] $G_m$ is the set of all males.  $E_{brown}$ is the set of
+     all brown-eyed people.  Describe the set difference: $S_7 = E_{brown}
+     - G_m$
+       \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+set7 <- Strangers[Strangers$eyes=="Brown" & Strangers$gender!="Male","names"]
+cat(paste('\\begin{displaymath} S_7=\\left\\{',paste(set7,collapse=", "),'\\right\\}\\end{displaymath}'))
+@ 
+       \end{solutionordottedlines}
+   \end{parts}
+
+   \question[8] Based on Table~\ref{tab:strangers}, create an outcome table
+   for the variables of hair color and eye color.
+\ifprintanswers
+<<label=tab4,echo=FALSE,results=tex>>=
+ outcomes <- addmargins(table(Strangers$hair,Strangers$eyes))
+ print(xtable(outcomes, caption = "Outcome Table for eye and hair color", label = "tab:outcome1", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c||c|",digits=0), sanitize.text.function = function(x) {x}, hline.after = c(nrow(outcomes),seq(from=-1,to=nrow(outcomes),by=1)))
+@ 
+\else
+%
+<<label=tab32,echo=FALSE,results=tex>>=
+ blanks <- matrix(" ",nrow=5,ncol=5)
+ rownames(blanks) <- c("Black","Blue","Brown","Green"," ")
+ colnames(blanks) <- c("Black","Blond","Brown","Red"," ")
+ print(xtable(blanks, caption = "Outcome Table for eye and hair color", label = "tab:outcome1", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c||p{1cm}|"), sanitize.text.function = function(x) {x}, hline.after = c(nrow(outcomes),seq(from=-1,to=nrow(outcomes),by=1)))
+@ 
+\fi
+\newpage
+   \question[3] What is the law of large numbers?
+   \begin{solutionordottedlines}[0.6in]
+     As the number of samples increases, the relative frequency of
+     outcomes approaches the true probability of the outcome.
+   \end{solutionordottedlines}
+
+<<label=tab5,echo=FALSE,results=tex>>=
+
+ allstrangers <- data.frame(hair=sample(c("Brown","Blond","Black","Red"),2000,replace=TRUE,p=c(0.5,0.2,0.2,0.1)))
+ allstrangers$eyes <- "Blue"
+ allstrangers[allstrangers$hair=="Brown",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Brown")),replace=TRUE,p=c(0.2,0.1,0.4,0.1))
+ allstrangers[allstrangers$hair=="Blond",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Blond")),replace=TRUE,p=c(0.05,0.3,0.4,0.25))
+ allstrangers[allstrangers$hair=="Black",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Black")),replace=TRUE,p=c(0.4,0.1,0.4,0.1))
+ allstrangers[allstrangers$hair=="Red",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Red")),replace=TRUE,p=c(0.05,0.05,0.3,0.65))
+
+while(length(unique(allstrangers$hair))<4 | length(unique(allstrangers$eyes))<4)
+ {
+     allstrangers <- data.frame(hair=sample(c("Brown","Blond","Black","Red"),2000,replace=TRUE,p=c(0.5,0.2,0.2,0.1)))
+ allstrangers$eyes <- "Blue"
+ allstrangers[allstrangers$hair=="Brown",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Brown")),replace=TRUE,p=c(0.2,0.1,0.4,0.1))
+ allstrangers[allstrangers$hair=="Blond",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Blond")),replace=TRUE,p=c(0.05,0.3,0.4,0.25))
+ allstrangers[allstrangers$hair=="Black",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Black")),replace=TRUE,p=c(0.4,0.1,0.4,0.1))
+ allstrangers[allstrangers$hair=="Red",]$eyes <- sample(c("Black","Blue","Brown","Green"),nrow(subset(allstrangers,hair=="Red")),replace=TRUE,p=c(0.05,0.05,0.3,0.65))
+   }
+
+ outcome2 <- addmargins(table(allstrangers))
+ write.csv(outcome2,'data/Outcome2_UNIQUEKEY.csv')
+print(xtable(outcome2, caption = "Frequencies of recorded eye and hair color", label = "tab:outcome2", table.placement = "ht", caption.placement = "top", align="|c|c|c|c|c||c|",digits=0), sanitize.text.function = function(x) {x}, hline.after = c(nrow(outcomes),seq(from=-1,to=nrow(outcomes),by=1)))
+@ 
+
+   \question Suppose Table~\ref{tab:outcome2} represents the outcome table
+   for people's hair and eye color after collecting a lot more data.
+   \begin{parts}
+     \part[2] Using the law of large numbers, what is the expected probability of
+     encountering a person with blue eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.blueeye <- nrow(subset(allstrangers, eyes=="Blue"))
+n <- nrow(allstrangers)
+paste('Number of blue-eyed people:',n.blueeye,'  ')
+paste('Number of people:',n,'  ')
+paste('Probability:',n.blueeye/n,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[2] What is the joint probability of encountering a person with red
+     hair and green eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.redgreen <- nrow(subset(allstrangers, hair=="Red" & eyes=="Green"))
+paste('Number of red-haired, green--eyed people:',n.redgreen,'  ')
+paste('Number of people:',n,'  ')
+paste('Probability:',n.redgreen/n,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[2] What is the marginal probability of encountering a person with green eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.greeneye <- nrow(subset(allstrangers, eyes=="Green"))
+paste('Number of green--eyed people:',n.greeneye,'  ')
+paste('Number of people:',n,'  ')
+paste('Probability:',n.greeneye/n,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[3] What is the conditional probability of encountering a person
+     with red hair given they have green eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of red-haired, green--eyed people:',n.redgreen,'  ')
+paste('Number of green--eyed:',n.greeneye,'  ')
+paste('Probability:',n.redgreen/n.greeneye,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[3] What is the conditional probability of encountering a person
+     with black hair given they have blue eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.blackblue <- nrow(subset(allstrangers,eyes=="Blue" & hair=="Black"))
+paste('Number of black-haired, blue--eyed people:',n.blackblue,'  ')
+paste('Number of blue--eyed:',n.blueeye,'  ')
+paste('Probability:',n.blackblue/n.blueeye,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[3] Given a person has black hair, what is the probability they
+     have blue eyes?
+     \begin{solutionordottedlines}[0.3in]
+<<label=tab2s2,results=tex,echo=FALSE>>=
+n.blackblue <- nrow(subset(allstrangers,eyes=="Blue" & hair=="Black"))
+n.blackhair <- nrow(subset(allstrangers,hair=="Black"))
+paste('Number of black-haired, blue--eyed people:',n.blackblue,'  ')
+paste('Number of black-haired:',n.blackhair,'  ')
+paste('Probability:',n.blackblue/n.blackhair,'  ')
+@ 
+     \end{solutionordottedlines}
+     \part[4] Knowing the probability of a person having blue eyes given they
+     have black hair, and the marginal probability of blue eyes, do you
+     believe eye color and hair color are independent?  Why or why not?
+     \begin{solutionordottedlines}[0.3in]
+       They are not independent, because the conditional probability does
+       not equal the marginal probability, i.e., $p(E_{blue} \mid
+       H_{black}) \neq p(E_{blue})$
+     \end{solutionordottedlines}
+   \end{parts}
+
+   \question[4] The probability that a college student illegaly downloads
+   songs and movies, $p(s \cap m)=0.06$.  Sixty out of 100 students
+   download songs, and 10 out of 100 students download movies.  Are
+   downloading songs and movies independent?
+   \begin{solutionordottedlines}[0.3in]
+     They are independent, because the probability of the intersection
+     equals the product of the probabilities.
+   \end{solutionordottedlines}
+
+\ifprintanswers
+<<label=tab51,echo=FALSE,results=tex>>=
+ Strangers <- Strangers[with(Strangers, order(-age)),]
+
+ age.dev <- Strangers$age - mean(Strangers$age)
+ age.sqdev <- (age.dev)^2
+ Deviation <- rep("",length(Strangers$age))
+ Deviation2 <- rep("",length(Strangers$age))
+ row.last.1 <- c("","",mean(Strangers$age),"",sum(age.sqdev)) 
+ row.last.2 <- c("","","","","")
+ tab5.1 <- data.frame(rbind(cbind(Strangers$name,Strangers$gender,Strangers$age,age.dev,age.sqdev),row.last.1))
+ tab5.2 <- data.frame(rbind(cbind(Strangers$name,Strangers$gender,Strangers$age,Deviation,Deviation2),row.last.2))
+
+ colnames(tab5.1) <- c("Namet","Gender","Age","$Age - \\mu$","${(Age - \\mu)}^2$")
+ print(xtable(tab5.1, caption = "Random people at Grand Central Station", label = "tab:ages", table.placement = "ht", caption.placement = "top", align="c|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(nrow(tab5.1),seq(from=-1,to=nrow(tab5.1),by=1)))
+@ 
+\else
+%
+<<label=tab52,echo=FALSE,results=tex>>=
+ colnames(tab5.2) <- c("Name","Gender","Age","","")
+ print(xtable(tab5.2, caption = "Random people at Grand Central Station", label = "tab:ages", table.placement = "ht", caption.placement = "top", align="c|c|c|c|p{3cm}|p{3cm}|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(nrow(tab5.2),seq(from=-1,to=nrow(tab5.2),by=1)))
+@ 
+\fi
+
+ \question Now you're interested in the ages of the people from Grand
+ Central Station.
+
+   \begin{parts}
+     \part[4] What is the average age?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s1,echo=FALSE>>=
+mean(Strangers$age)
+@ 
+       \end{solutionordottedlines}
+   \part[1] What is the range of ages?
+   \begin{solutionordottedlines}[0.3in]
+<<label=sent25,echo=FALSE>>=
+max(Strangers$age)-min(Strangers$age)
+@
+   \end{solutionordottedlines}
+   \part[2] What is the modal age?
+   \begin{solutionordottedlines}[0.3in]
+<<label=modrcvd,echo=FALSE>>=
+ age.tbl <- table(Strangers$age)
+ age.tbl[which.max(age.tbl)]
+@
+   \end{solutionordottedlines}
+     \part[2] What is the median age?
+       \begin{solutionordottedlines}[0.3in] 
+<<label=tab1s1,echo=FALSE>>=
+median(Strangers$age)
+@ 
+       \end{solutionordottedlines}
+   \part[5] What is the variance of ages?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,echo=FALSE>>=
+var(Strangers$age)
+@ 
+   \end{solutionordottedlines}
+   \part[2] What is the standard deviation of ages?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s3,echo=FALSE>>=
+sd(Strangers$age)
+@ 
+   \end{solutionordottedlines}
+   \part[3] What is the coefficient of variance for ages?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,echo=FALSE>>=
+sd(Strangers$age) / mean(Strangers$age)
+@ 
+   \end{solutionordottedlines}
+   \end{parts}
+
+   \question[3] What is an \emph{event} in probability?
+   \begin{solutionordottedlines}[0.3in] 
+     An event is a subset of the sample space.
+   \end{solutionordottedlines}
+
+   \question Using the observed frequencies, estimate the following:
+   \begin{parts}
+     \part[4] What is the probability that a person at Grand Central
+     Station is older than 30?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of people older than 30: ',nrow(subset(Strangers,age>30)),'/20')
+paste('Probability: ',nrow(subset(Strangers,age>30))/20,'  ')
+@ 
+   \end{solutionordottedlines}
+     \part[4] What is the probability that a person at Grand Central
+     Station is younger than 35?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of people younger than 35: ',nrow(subset(Strangers,age<35)),'/20')
+paste('Probability: ',nrow(subset(Strangers,age<35))/20,'  ')
+@ 
+   \end{solutionordottedlines}
+     \part[4] What is the probability that a person at Grand Central
+     Station is exactly 35?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of people exactly 35: ',nrow(subset(Strangers,age==35)),'/20')
+paste('Probability: ',nrow(subset(Strangers,age==35))/20,'  ')
+@ 
+   \end{solutionordottedlines}
+     \part[4] What is the probability that a person at Grand Central
+     Station is a male younger than 40?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of males younger than 40: ',nrow(subset(Strangers,age<40 & gender=="Male")),'/20')
+paste('Probability: ',nrow(subset(Strangers,age<50 & gender=="Male"))/20,'  ')
+@ 
+   \end{solutionordottedlines}
+     \part[5] What is the probability a person at Grand Central is between
+     the age of 18-28 (inclusive)?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of people between 18-28: ',nrow(subset(Strangers,age<=28 & age>=18)),'/20')
+paste('Probability: ',nrow(subset(Strangers,age<=28 & age>=18))/20)
+@ 
+   \end{solutionordottedlines}
+     \part[5] Given a person at Grand Central Station is female, what is
+     the probability they are between 25-35 (inclusive)?
+   \begin{solutionordottedlines}[0.3in] 
+<<label=tab2s2,results=tex,echo=FALSE>>=
+paste('Number of women between 25-35: ',nrow(subset(Strangers,age<=35 & age>=25 & gender=="Female")),'/',nrow(subset(Strangers,gender=="Female")))
+paste('Probability: ',nrow(subset(Strangers,age<=35 & age>=25 & gender=="Female"))/nrow(subset(Strangers,gender=="Female")))
+@ 
+   \end{solutionordottedlines}
+   \end{parts}
+
+   \bonusquestion[5] The probability that it will rain tomorrow, $p(r)=0.3$.
+   The probability that you will wash your car tomorrow, $p(w)=0.6$.  The
+   probability you will wash your car given it rains tomorrow,
+   $p(w \mid r)=0.02$.  What is the probability it will rain tomorrow if
+   you wash your car?
+   \begin{solutionordottedlines}[0.3in]
+     $p(r \mid w)=\frac{p(w \mid r) \cdot \p(r)}{p(w)}=0.01$
+   \end{solutionordottedlines}
+
+
+\end{questions}
+\newpage
+.
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

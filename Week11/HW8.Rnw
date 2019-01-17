@@ -1,0 +1,287 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\usepackage{longtable,lscape,rotating}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 8 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 12/6 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 8 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1 : Nonlinear regression
+
+%
+<<label=401k,echo=FALSE>>=
+library(xtable)
+  Professor.ID <- sample(1000:9999,18)
+Pct.Bonds <- sample(1:100,18)
+Current.Value <- round(150 + 0.8*Pct.Bonds - 0.01*Pct.Bonds^2 + sample(rnorm(10000,0,2),18),2)
+df.401k <- data.frame(Professor.ID,Current.Value,Pct.Bonds,"Sq.Pct.Bonds"=Pct.Bonds^2)
+nlm.401k <- lm(Current.Value ~ Pct.Bonds + Sq.Pct.Bonds, df.401k)
+df.401k.full <- data.frame("Predicted"=round(nlm.401k$fitted.values,3),"Residuals"=round(nlm.401k$residuals,3))
+df.401k.full$Squared.Reg <- round((df.401k.full$Predicted - mean(df.401k$Current.Value))^2,3)
+df.401k.full$Squared.Res <- round(df.401k.full$Residuals^2,3)
+df.401k <- rbind(df.401k, c("Mean:",round(mean(Current.Value),3),round(mean(Pct.Bonds),3),round(mean(Pct.Bonds^2),3)))
+df.401k <- rbind(df.401k, c("SD:",round(sd(Current.Value),3),round(sd(Pct.Bonds),3),round(sd(Pct.Bonds^2),3)))
+df.401k.full <- rbind(df.401k.full, c("","Sum:",sum(df.401k.full$Squared.Reg),sum(df.401k.full$Squared.Res)))
+
+
+df.401k.table <- df.401k.full
+df.401k.table[11:18,"Predicted"] <- rep.int("",8)
+df.401k.table[11:18,"Residuals"] <- rep.int("",8)
+df.401k.table[11:19,"Squared.Reg"] <- rep.int("",9)
+df.401k.table[11:19,"Squared.Res"] <- rep.int("",9)
+  write.csv(df.401k,'data/401k_UNIQUEKEY.csv')
+@ 
+ 
+  \question With your first ``real'' job you also get your first 401k, and
+  have to choose the investment strategy: what percentage should be
+  invested in bonds?  Being a saavy investor, you decide to ask your
+  professors (who have been investing for decades) what proportion they
+  chose to invest and what the value of their 401k is at that moment.
+  Table~\ref{tab:401k} shows the proportion they allocated to bonds and the
+  current value of their package.
+    \begin{parts}
+      \part[5] What is the correlation coefficient for the percent
+      allocated to bonds and the current value of the packages?
+      \begin{solution}
+<<label=cor401k,echo=FALSE,results=tex>>=
+  print(cor(Pct.Bonds,Current.Value))
+@ 
+      \end{solution}
+      \part[2] What is the goodness-of-fit for the corresponding linear
+      model (i.e., $R^2$)?
+      \begin{solution}
+<<label=rsq401k,echo=FALSE,results=tex>>=
+  print(cor(Pct.Bonds,Current.Value)^2)
+@ 
+      \end{solution}
+    \end{parts}
+
+  \question You notice a down-up-down trend in the current value as the
+  percent allocated to bonds increases.  Table~\ref{tab:401k} also shows
+  the percent allocated to bonds \emph{squared}, and
+  Table~\ref{tab:401k-reg} shows the beginnings of the calculation for the
+  regression formula $y = b_0 + b_1x + b_2x^2$, where $y$ is the current
+  value and $x$ is the percent invested in bonds.  Table~\ref{tab:401k-fit}
+  shows the best fitting parameters.
+  \begin{parts}
+    \part[8] Finish calculating the predicted values.
+    \part[8] Finish calculating the residuals.
+    \part[8] Finish calculating the squared deviations of the model from the
+    average (\emph{Squared.Reg}).
+    \part[4] Finish calculating the squared residuals.
+    \part[2] What is the sum of squares for the regression?
+    \begin{solution}
+<<label=SSreg,echo=FALSE,results=tex>>=
+  print(sum(as.numeric(df.401k.full[1:18,"Squared.Reg"])))
+@ 
+    \end{solution}
+    \part[2] What is the sum of squared residuals?
+    \begin{solution}
+<<label=SSres,echo=FALSE,results=tex>>=
+  print(sum(as.numeric(df.401k.full[1:18,"Squared.Res"])))
+@ 
+    \end{solution}
+  \end{parts}
+
+  \question You want to know if this nonlinear, \emph{polynomial} model is
+  a better fit to the data.
+  \begin{parts}
+    \part[1] What are the degrees of freedom for the regression?
+    \begin{solution}
+      2
+    \end{solution}
+    \part[1] What are the degrees of freedom for the residual?
+    \begin{solution}
+      18 - 2 - 1 = 15 
+    \end{solution}
+    \part[2] What is the critical F-value for these degrees of freedom?
+    \begin{solution}
+<<label=Fcrit401k,echo=FALSE,results=tex>>=
+  print(qf(0.95,2,15))
+@       
+    \end{solution}
+    \part[2] What is the mean squared error of the regression?
+    \begin{solution}
+<<label=MSreg,echo=FALSE,results=tex>>=
+  print(sum(as.numeric(df.401k.full[1:18,"Squared.Reg"]))/2)
+@ 
+    \end{solution}
+    \part[2] What is the mean squared residual error?
+    \begin{solution}
+<<label=MSres,echo=FALSE,results=tex>>=
+  print(sum(as.numeric(df.401k.full[1:18,"Squared.Res"]))/15)
+@ 
+    \end{solution}
+    \part[2] What is the F statistic for this regression?
+    \begin{solution}
+<<label=MSres,echo=FALSE,results=tex>>=
+  print(sum(as.numeric(df.401k.full[1:18,"Squared.Res"]))/15)
+@ 
+    \end{solution}
+    \part[1] Can you reject the null hypothesis that there is no
+    relationship between the percent allocated to bonds, the squared
+    percent allocated to bonds, and the current value?
+    \part[5] What is the goodness-of-fit for this regression
+      model (i.e., $R^2$)?
+    \begin{solution}
+<<label=rsq401k,echo=FALSE,results=tex>>=
+  print(summary(nlm.401k)$r.squared)
+@ 
+    \end{solution}
+    \part[2] Is this polynomial model a better fit than the linear
+    model?
+  \end{parts}
+
+  \question You also want to know how well each variable predicts the
+  current value.
+  \begin{parts}
+    \part[6] Calculate the t-value for the intercept and both slopes.
+    \part[2] What is the critical t-value for these slopes?
+    \begin{solution}
+<<label=tcrit401k,echo=FALSE,results=tex>>=
+  print(qt(0.975,15))
+@ 
+    \end{solution}
+    \part[3] Which of the parameters ($b_0$,$b_1$,$b_2$) are significantly
+    different from zero?
+  \end{parts}
+
+%%%%%%%%  Problem 5
+
+<<label=major,echo=FALSE>>=
+  Income <- round(sample(rnorm(10000,60,15),20),1)
+  Age <- round(sample(rnorm(10000,28,5),20),0)
+  major.props <- sample(3:6,3)
+  Major <- c(rep("Biz Tech",major.props[1]),rep("Engineering",major.props[2]),rep("QF",major.props[3]),rep("Systems",20-sum(major.props)))
+  df.major <- data.frame(Income,Age,Major)
+write.csv(df.major,'data/Major_UNIQUEKEY.csv')
+@ 
+
+  \question Table~\ref{tab:major} shows the age and college major of
+  several college graduates, as well as their current income.  Suppose you
+  wanted to predict income with age and major.
+  \begin{parts}
+    \part[2] How many dummy variables would you need to use major in a
+    regression model?
+    \begin{solution}
+      3
+    \end{solution}
+    \part[8] Create the dummy variables needed to fit the regression model
+    with major as a predictive variable.
+    \part[2] How would you modify these to create \emph{effect}-coded
+    variables instead of dummy-coded variables?
+    \begin{solution}
+      Change the 0 / 0 coding to -1 / -1
+    \end{solution}
+  \end{parts}
+
+%%%%%%%%  Problem 6
+
+<<label=apple,echo=FALSE>>=
+  Date <- seq(as.Date("2011/12/1/"),by="-1 month",length.out=20)
+  Apple <- round(300 + 2*(20:1) + sample(rnorm(10000,0,40),20),0)
+  df.apple <- data.frame(Date, Apple)
+  df.apple.table <- cbind(df.apple,"MA.3"=rep("",20),"MA.6"=rep("",20))
+  df.apple.table$Date <- as.character(df.apple.table$Date)
+write.csv(df.apple,'data/Apple_UNIQUEKEY.csv')
+@ 
+
+  \question Table~\ref{tab:apple} shows the change in Apple's stock over
+  the past 20 months [\emph{Note: not real data}].
+  \begin{parts}
+    \part[2] How many observations would a moving average with a window of
+    size 3 have?
+    \begin{solution}
+      17
+    \end{solution}
+    \part[2] How many observations would a moving average with a window of
+    size 6 have?
+    \begin{solution}
+      14
+    \end{solution}
+    \part[8] Calculate a moving average with a window of size 3 (i.e., fill in
+    the column labeled ``MA.3'').
+    \part[8] Calculate a moving average with a window of size 6 (i.e., fill in
+    the column labeled ``MA.6'').
+  \end{parts}
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\newpage
+
+<<label=tab401k,echo=FALSE,results=tex>>=
+  print(xtable(df.401k, caption = "Percent invested in bonds and value", label = "tab:401k", table.placement = "t", caption.placement = "top", align="c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Current.Value),seq(from=-1,to=nrow(df.401k),by=1)))
+@ 
+
+
+\ifprintanswers
+<<label=tabFull,echo=FALSE,results=tex>>=
+  print(xtable(df.401k.full, caption = "Table to calculate regression model", label = "tab:401k-reg", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Current.Value),seq(from=-1,to=nrow(df.401k.full),by=1)))
+@ 
+\else
+% 
+<<label=tab401k,echo=FALSE,results=tex>>=
+  print(xtable(df.401k.table, caption = "Table to calculate regression model", label = "tab:401k-reg", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Current.Value),seq(from=-1,to=nrow(df.401k.table),by=1)))
+@ 
+\fi
+
+\ifprintanswers
+<<label=tab401kFit,echo=FALSE,results=tex>>=
+  print(xtable(nlm.401k, caption = "Regression Model", label = "tab:401k-fit", table.placement = "t", caption.placement = "top"))
+@ 
+\else
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+  & Estimate & Std. Error & t value & sig. ? \\ 
+  \hline
+<<label=tab401kFit,echo=FALSE,results=tex>>=
+  cat(paste("(Intercept) ($b_0$) & ",round(nlm.401k$coefficients[1],2)," & ",round(summary(nlm.401k)$coefficients[1,2],4)," & &"))
+@ 
+\\
+<<label=tab401kFit,echo=FALSE,results=tex>>=
+  cat(paste("Pct.Bonds ($b_1$) & ",round(nlm.401k$coefficients[2],2)," & ",round(summary(nlm.401k)$coefficients[2,2],4)," & &"))
+@ 
+\\
+<<label=tab401kFit,echo=FALSE,results=tex>>=
+  cat(paste("Sq.Pct.Bonds ($b_2$) & ",round(nlm.401k$coefficients[3],2)," & ",round(summary(nlm.401k)$coefficients[3,2],4)," & &")) 
+@ 
+\\
+  \hline
+\end{tabular}
+\caption{Regression Model}
+\label{tab:401k-fit}
+\end{center}
+\end{table}
+\fi
+
+<<label=majortab,echo=FALSE,results=tex>>=
+  print(xtable(df.major, caption = "Age and major and income", label = "tab:major", table.placement = "t", caption.placement = "top"),include.rownames=FALSE)
+@ 
+
+<<label=Appletable,echo=FALSE,results=tex>>=
+print(xtable(df.apple.table, caption = "Value of Apple's stock over the past 20 months", label = "tab:apple", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+@ 
+
+
+\end{document}

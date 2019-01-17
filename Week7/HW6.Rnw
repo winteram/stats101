@@ -1,0 +1,191 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 6 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 11/3 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 6 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1
+
+%
+<<label=hdtv,echo=FALSE>>=
+  HDTV.df <- data.frame(Types=sample(c("LED","LCD","Plasma"),1500, replace=TRUE,p=c(0.4,0.3,0.3)))
+  HDTV.df$Sizes <- '27"'
+  HDTV.df[HDTV.df$Types=="LED",]$Sizes <- sample(c('27"','31"','36"','42"','52"'),nrow(HDTV.df[HDTV.df$Types=="LED",]), replace=TRUE,p=c(0.1,0.25,0.25,0.2,0.2))
+  HDTV.df[HDTV.df$Types=="LCD",]$Sizes <- sample(c('27"','31"','36"','42"','52"'),nrow(HDTV.df[HDTV.df$Types=="LCD",]), replace=TRUE,p=c(0.1,0.2,0.25,0.25,0.2))
+  HDTV.df[HDTV.df$Types=="Plasma",]$Sizes <- sample(c('27"','31"','36"','42"','52"'),nrow(HDTV.df[HDTV.df$Types=="Plasma",]), replace=TRUE,p=c(0.1,0.2,0.2,0.25,0.25))
+  HDTVs <- table(HDTV.df)
+  write.csv(HDTVs,'data/HDTVs_UNIQUEKEY.csv')
+@ 
+
+  \question You're the manager of an electronics store and want to know if
+  any particular configuration of HDTV is espeically popular.  The TVs come
+  in 5 different sizes and 3 different kinds of TV: LED, LCD, and
+  Plasma.  Table~\ref{tab:hdtv} shows the number of each kind of TV sold.
+
+  \begin{parts}
+    \part[2] What is the null hypothesis?
+    \begin{solution}
+      No particular TV sold more than any other TV
+    \end{solution}
+    \part[2] What is the alternative hypothesis?
+    \begin{solution}
+      At least one TV sold more than any of the other TVs
+    \end{solution}
+      \part[10] What is the chi-squared statistic for these figures?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(chisq.test(HDTVs))
+@ 
+      \end{solution}
+    \part[2] How many degrees of freedom are there?
+    \begin{solution}
+      8
+    \end{solution}
+    \part[5] What is the critical chi-squared value for Type I error rate = 0.05?
+    \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(qchisq(0.05,df=8))
+@ 
+
+    \end{solution}
+    \part[5] Can you reject the null hypothesis with a Type I error rate = 0.05?
+    \begin{solution}
+      maybe?
+    \end{solution}
+  \end{parts}
+
+%
+<<label=diet2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(HDTVs, caption = "Sales of HDTVs", label = "tab:hdtv", table.placement = "ht", caption.placement = "top"))
+@ 
+%    
+
+%%%%%%%%  Problem 2
+
+%
+<<label=lingerie,echo=FALSE>>=
+  rho <- 0.75
+  zL <- sort(round(sample(rnorm(10000),25),0),decreasing=TRUE)
+  zV <- round(rho*zL + sqrt( 1 - rho^2 )*round(sample(rnorm(10000),25),1),0)
+  Lingerie <- zL * 30 + 150
+  Visitors <- zV * 3 + 12
+  write.csv(data.frame(Lingerie,Visitors),'data/Lingerie_UNIQUEKEY.csv')
+@ 
+
+  \question In one year, you randomly select 25 days and measure the
+  national sales of lingerie and the number of visitors to online dating
+  sites, listed in Table \ref{tab:lingerie}.
+    \begin{parts}
+      \part[10] What is the covariance between lingerie sales and online
+      dating visitors?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(cov(Lingerie,Visitors))
+@ 
+      \end{solution}
+      \part[10] What is the correlation coefficient between these variables?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(cor(Lingerie,Visitors))
+@ 
+      \end{solution}
+    \part[10] Calculate the t-value for the correlation and determine if
+    the variables are significantly correlated.
+      \begin{solution}
+<<label=dietcritt,echo=TRUE>>=
+  lv.lm <- lm(Lingerie ~ Visitors)
+  print(summary(lv.lm))
+@ 
+      \end{solution}
+      \part[12] What would be the expected lingerie sales on a day with
+      twenty thousand visitors to online dating sites?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(lv.lm$coefficients["Visitors"] * 20 + lv.lm$coefficients["(Intercept)"])
+@ 
+      \end{solution}
+    \end{parts}    
+
+
+%%%%%%%%  Problem 3
+
+%
+<<label=procrast,echo=FALSE>>=
+  rho <- -0.7
+  zP <- sort(round(sample(rnorm(10000),25),1),decreasing=TRUE)
+  zG <- round(rho*zL + sqrt( 1 - rho^2 )*round(sample(rnorm(10000),25),1),1)
+  Procrastination <- zL * 1.5 + 8
+  Grade <- zG * 8 + 75
+  write.csv(data.frame(Procrastination,Grade),'data/Procrastinate_UNIQUEKEY.csv')
+@ 
+
+  \question For a recent assignment, you took a poll of the class and asked
+  how many hours your classmates procrastinated before starting the
+  assignment and their grade on the assignment.  The results of your
+  poll are shown in Table \ref{tab:procrast}.
+    \begin{parts}
+      \part[10] What is the correlation coefficient between these variables?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(cor(Procrastination, Grade))
+@ 
+      \end{solution}
+    \part[10] Calculate the t-value for the correlation and determine if
+    the variables are significantly correlated.
+      \begin{solution}
+<<label=dietcritt,echo=TRUE>>=
+  gp.lm <- lm(Grade ~ Procrastination)
+  print(summary(gp.lm))
+@ 
+      \end{solution}
+      \part[12] What would be the expected grade for someone who only
+      procrastinated 2 hours?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(gp.lm$coefficients["Procrastination"] * 2 + gp.lm$coefficients["(Intercept)"])
+@ 
+      \end{solution}
+    \end{parts}
+
+
+\newpage
+.
+\newpage
+
+%
+<<label=diet2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Lingerie,Visitors), caption = "Sales of lingerie and vistors to online dating sites (in 1000s)", label = "tab:lingerie", table.placement = "ht", caption.placement = "top",digits=0))
+@ 
+
+%
+<<label=diet2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Procrastination, Grade), caption = "Hours spent procrastinating before starting an assignment and the final grade", label = "tab:procrast", table.placement = "ht", caption.placement = "top"))
+@ 
+%    
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

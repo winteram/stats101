@@ -1,0 +1,238 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+
+\ifprintanswers
+\pointformat{(\thepoints)}
+\else
+\pointformat{}
+\fi
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 3 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 9/20 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 3 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question[2] You just finished collecting data on students from three
+  different school districts, including demographics and SAT scores.  You
+  are interested in the breakdown of scores between genders and school
+  districts.  What type of plot would you use?
+    \begin{solution}
+      Grouped Line or Grouped bar chart
+    \end{solution}
+
+  \question[2] You're interested in the relationship between a CEO's salary
+  and their company's average stock price for a data set of 100 companies.
+    \begin{parts}
+      \part You want to know the distribution of stock prices for all 100
+      companies.  What plot would you use? 
+        \begin{solution}
+          Histogram or Box plot
+        \end{solution}
+      \part  What plot would you use to compare CEO salaries and stock prices?
+        \begin{solution}
+          Scatterplot
+        \end{solution}
+    \end{parts}
+
+  \question[2] Your company just received the results of an employee survey in
+  which they rated their job satisfaction on a scale from ``Very happy'' to
+  ``Ready to quit''. You want to know the relationship between the survey
+  responses and the employees' salary.  How would you show this?
+    \begin{solution}
+      Line chart
+    \end{solution}
+
+  \question[2] A peer claims that women's salaries decrease with age while
+  men's salaries increase as they get older.  What plot would you use to
+  test this claim?
+    \begin{solution}
+      Scatter plot
+    \end{solution}
+
+%
+<<label=employees,echo=FALSE>>=
+  Position <- c(5,sample(1:4,19,replace=TRUE,prob=c(0.6,0.2,0.1,0.1)))
+Pos.labels <- c("Employee","Manager","VP","SVP","CEO")
+Pos.sal <- c(50000,100000,300000,500000,1200000)
+Gender <- sample(1:2,20,replace=TRUE,prob=c(0.6,0.4))
+Gender.labels <- c("Male","Female")
+Gender.sal <- c(1,0.8)
+Gender.sha <- sample(c(1,0),2)
+Employees <- data.frame(Position,Gender)
+
+Employees$Job.Satisfaction <- Employees$Position + 3 - Employees$Gender + sample(-2:2,1,replace=TRUE)
+Employees[Employees$Job.Satisfaction>6,"Job.Satisfaction"] <- 6
+Employees[Employees$Job.Satisfaction<1,"Job.Satisfaction"] <- 1
+Satis.labels <- c("Ready to Quit","Very unhappy","Unhappy","Satisfied","Happy","Very happy")
+
+Employees$Salary <- round(Pos.sal[Employees$Position]*Gender.sal[Employees$Gender] + sample(rnorm(100000,mean=0,sd=10000),20))
+Employees <- Employees[with(Employees, order(-Position)),]
+
+Employees$Shares.Owned <- round(Pos.sal[Employees$Position]*0.01*Gender.sha[Employees$Gender] + 100*Employees$Job.Satisfaction + sample(rnorm(100000,mean=500,sd=100),20))
+
+Employees$Position <- Pos.labels[Employees$Position]
+Employees$Gender <- Gender.labels[Employees$Gender]
+Employees$Job.Satisfaction <- ordered(Employees$Job.Satisfaction,levels=1:6,labels=Satis.labels)
+@
+%
+\vspace{1 in}
+All of the remaining questions refer to the data in
+Table~\ref{tab:employees}.
+
+<<label=tab1,echo=FALSE,results=tex>>=
+library(xtable)
+print(xtable(Employees, caption = "Data collected on employees of a small company", label = "tab:employees", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+@ 
+%
+
+  \question[1] What is the elementary unit in this data set?
+  \begin{solution}
+    Employees in the company
+  \end{solution}
+
+  \question[1] What is the ordinal variable in this data set?
+  \begin{solution}
+    Job Satisfaction
+  \end{solution}
+
+
+  \question[12] Create a histogram showing the distribution of shares owned by
+  the employees. (hint: bin by 500)
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=histshares,fig=TRUE,echo=FALSE>>=
+library(ggplot2)
+theme_set(theme_bw())
+p <- ggplot(Employees, aes(x=Shares.Owned)) + geom_histogram(fill="white",color="black",binwidth=500) + theme_bw()
+print(p)
+@
+  \end{center}
+  \caption{Histogram of shares owned}
+  \label{fig:histshares}
+\end{figure}
+\fi
+
+  \question 
+  \begin{parts}
+    \part[12] Draw a boxplot showing the variability of salaries (do not
+    exclude outliers).  Don't worry about drawing to scale, just label the
+    key points.
+    \part[6] Draw a boxplot that excludes outliers, being sure to label key
+    points.
+  \end{parts}
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=boxsalary,fig=TRUE,echo=FALSE>>=
+print(quantile(Employees$Salary,c(0,0.25,0.5,0.75,1),type=1))
+p <- ggplot(Employees, aes(x=factor(rep(1,20)),y=Salary)) + geom_boxplot()
+print(p)
+@
+  \end{center}
+  \caption{Boxplot of salaries}
+  \label{fig:boxsalary}
+\end{figure}
+\fi
+
+  \question[12] Plot the average salary for each type of employee (e.g.,
+  CEO, SVP, etc.)
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=possalary,fig=TRUE,echo=FALSE>>=
+empl.by.pos <- ddply(Employees, .(Position), summarize, m.salary=mean(Salary), sd.salary=sd(Salary))
+p <- ggplot(empl.by.pos, aes(x=Position,y=m.salary)) + geom_bar(fill="white",color="black")
+print(p)
+@
+  \end{center}
+  \caption{Salaries by Position}
+  \label{fig:possalary}
+\end{figure}
+\fi
+
+  \question[12] Show how men and women's salaries differ by position (e.g.,
+  CEO, SVP, etc.)
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=possexsalary,fig=TRUE,echo=FALSE>>=
+empl.by.pos.sex <- ddply(Employees, .(Position, Gender), summarize, m.salary=mean(Salary), sd.salary=sd(Salary))
+p <- ggplot(empl.by.pos.sex, aes(x=Position,y=m.salary, fill=Gender)) + geom_bar(position="dodge")
+print(p)
+@
+  \end{center}
+  \caption{Salaries by Position and Gender}
+  \label{fig:possexsalary}
+\end{figure}
+\fi
+
+  \question[12] Show how an employee's job satisfaction is related to their salary
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=satissalary,fig=TRUE,echo=FALSE>>=
+salary.by.satis <- ddply(Employees, .(Job.Satisfaction), summarize, m.salary=mean(Salary), sd.salary=sd(Salary))
+p <- ggplot(salary.by.satis, aes(x=Job.Satisfaction,y=m.salary,group=1)) + geom_line() + geom_errorbar(aes(ymin=m.salary-sd.salary,ymax=m.salary+sd.salary))
+print(p)
+@
+  \end{center}
+  \caption{Salaries by Job Satisfaction}
+  \label{fig:staissalary}
+\end{figure}
+\fi
+
+  \question[12] Show how the relationship between job satisfaction and
+  salary is different for men and women
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=satissexsalary,fig=TRUE,echo=FALSE>>=
+salary.by.satis.sex <- ddply(Employees, .(Job.Satisfaction, Gender), summarize, m.salary=mean(Salary), sd.salary=sd(Salary))
+p <- ggplot(salary.by.satis.sex, aes(x=Job.Satisfaction,y=m.salary, colour=Gender,group=Gender)) + geom_line() + geom_errorbar(aes(ymin=m.salary-sd.salary,ymax=m.salary+sd.salary))
+print(p)
+@
+  \end{center}
+  \caption{Salaries by Job Satisfaction and Gender}
+  \label{fig:satissexsalary}
+\end{figure}
+\fi
+
+  \question[12] Plot the relationship between salary and number of shares
+  owned by employee
+
+  \bonusquestion[2] BONUS: Plot the relationship between salary and shares
+  owned for men and women.
+\ifprintanswers
+\begin{figure}
+  \begin{center}
+<<label=sharesalary,fig=TRUE,echo=FALSE>>=
+p <- ggplot(Employees, aes(x=Salary,y=Shares.Owned, colour=Gender)) + geom_point()
+print(p)
+@
+  \end{center}
+  \caption{Salaries by Job Satisfaction and Gender}
+  \label{fig:satissexsalary}
+\end{figure}
+\fi
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

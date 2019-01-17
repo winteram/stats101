@@ -1,0 +1,651 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 5 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 10/27 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 5 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question Table~\ref{tab:mets} shows the salaries of a random selection
+  of pitchers in the MLB, as well as that of the Mets' top paid pitcher,
+  Johan Santana.  You want to know if he is paid significantly more than
+  the average pitcher.
+    \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        Johan Santana's salary is not different from the average pitcher in
+        the MLB.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \part[2] What is the critical t-value?
+      \part[2] What is the 95\% confidence interval around the mean?
+      \part[2] What is the t-value for Johan Santana's salary?
+      \part[2] What is the probability of getting that t-value by chance?
+      In other words, what is the p-value?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+    \end{parts}
+
+%
+<<label=roomIQ,echo=FALSE>>=
+IQs <- sort(round(sample(rnorm(10000,mean=120,sd=10),25),0),decreasing=TRUE)
+write.csv(IQs,'data/roomIQ_UNIQUEKEY.csv')
+@ 
+%
+  \question You're at a party, and some guy in the room starts talking
+  about how smart he is and how he's significantly smarter than the average
+  person in the room.  Being one of the smartest people in the room, you decide to
+  test his claim by measuring the IQs of everyone in the room.
+  Mr. Smartypants' IQ is 125.  Everyone else's are: \\
+<<label=roomIQs,echo=FALSE,results=tex>>=
+noquote(paste(IQs,collapse=", "))
+@ 
+%
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        Mr. Smartypants's IQ is not different from everyone else's.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \begin{solution}
+        24
+      \end{solution}
+      \part[2] What is the critical t-value for Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+  print(qt(0.05,df=24))
+@ 
+      \end{solution}
+      \part[2] What is the 95\% confidence interval around the mean?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+  se <- abs(qt(0.05,df=24))*(sd(IQs)/5)
+  noquote(paste("(",round(mean(IQs)-se,2),",",round(mean(IQs)+se,2),")"))
+@ 
+      \end{solution}
+      \part[2] What is the t-value for Mr. Smartypants' IQ?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+  t.smart <- (125 - mean(IQs))/(sd(IQs)/5)
+  print(t.smart)
+@ 
+      \end{solution}
+      \part[2] What is the probability of getting that t-value by chance?
+      In other words, what is the p-value?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+  p.smart <- (1 - pt(t.smart,df=24))
+  noquote(p.smart)
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(p.smart<0.05,"Yes","No"))
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solution}
+<<label=roomIQcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(p.smart<0.01,"Yes","No"))
+@ 
+      \end{solution}
+  \end{parts}
+  \question Table~\ref{tab:ipos} shows the initial public offerings (IPOs)
+  of 27 different randomly selected companies and their stock prices one
+  year later.  You are trying to determine if it is a wise investment to
+  buy stocks of new public companies based on the change in value for this
+  sample. 
+    \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference in the value of the stocks 1 year later.
+      \end{solution}
+      \part[1] What is the alternative hypothesis?
+      \begin{solution}
+        There is a difference in the value of the stocks 1 year later
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \part[2] What is the critical t-value?
+      \part[2] What is the t-value for the sample?
+      \part[2] What is the p-value?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+    \end{parts}
+
+%
+<<label=diet,echo=FALSE>>=
+Weights.t1 <- sort(round(sample(rnorm(10000,mean=150,sd=15),20),1),decreasing=TRUE)
+Weights.t2 <- Weights.t1 + round(sample(rnorm(10000,mean=3,sd=2),20),1) - round(sample(rnorm(10000,mean=2,sd=2),20),1)
+Weight.diff <- Weights.t2 - Weights.t1
+write.csv(data.frame(1:20,Weights.t1,Weights.t2),'data/Diet_UNIQUEKEY.csv')
+@ 
+%
+
+  \question There is a new rumor spreading around the internet that a diet
+  consisting exclusively of diet soda and gummi bears helps you lose
+  weight.  The FDA has asked you to conduct a study to test these claims.
+  You gather 20 random people who intended to try the diet, and measure
+  their weight before and after, shown in Table~\ref{tab:diet}.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no change in participants' weight before and after the diet.
+      \end{solution}
+      \part[1] What is the alternative hypothesis? (\emph{hint: it's directional})
+      \begin{solution}
+        The participants' weight is lower after the diet.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \begin{solution}
+        19
+      \end{solution}
+      \part[2] What is the critical t-value for Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  print(qt(0.05,df=19))
+@ 
+      \end{solution}
+      \part[2] What is the 95\% confidence interval around the mean?
+      \begin{solution}
+<<label=dietCI,echo=FALSE,results=tex>>=
+  se <- abs(qt(0.05,df=19))*(sd(Weight.diff)/sqrt(20))
+  noquote(paste("(",round(mean(Weight.diff)-se,2),",",round(mean(Weight.diff)+se,2),")"))
+@ 
+      \end{solution}
+      \part[2] What is the t-value for the change in weight?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  t.diet <- mean(Weight.diff)/(sd(Weight.diff)/sqrt(20))
+  print(t.diet)
+  t.diet2 <- t.test(Weight.diff,alternative="less")
+  print(t.diet2$statistic)
+@ 
+      \end{solution}
+      \part[2] What is the corresponding p-value?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  p.diet <- pt(t.diet,df=19)
+  noquote(p.diet)
+  noquote(t.diet2$p.value)
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a \emph{one-tailed} Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(p.diet<0.05,"Yes","No"))
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a \emph{two-tailed} Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+noquote(ifelse((1-p.diet)<0.05,"Yes","No"))
+@ 
+      \end{solution}
+  \end{parts}
+
+
+  \question Table~\ref{tab:knicks} shows the scores for 30 Knicks games and
+  30 Spurs' games from 2006, the year the Spurs won the championship.  You
+  want to know if the Spurs scored significantly more points on average
+  than the Knicks that year.  Test this hypothesis, keeping in mind that
+  the variability of scores do not tend to be very different between teams.
+    \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference in the points scored by the Spurs and the Knicks.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \part[2] What is the critical t-value?
+      \part[2] What is the t-value for the difference in means?
+      \part[2] What is the p-value?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+    \end{parts}
+
+%
+<<label=dpp,echo=FALSE>>=
+Control.dpp <- round(sample(rnorm(10000,mean=5.8,sd=0.4),25),1)
+Experimental.dpp <- round(sample(rnorm(10000,mean=6.2,sd=0.4),25),1)
+write.csv(data.frame(1:25,Control.dpp,Experimental.dpp),'data/DPP_UNIQUEKEY.csv')
+@ 
+%
+
+  \question A new method of insulin delivery has been developed to help
+  diabetics control their blood sugar.  As part of a clinical trial, your
+  medical center randomly assigns half of your patients to receive the
+  standard injections and half to receive the new delivery method.  After a
+  month, the participants return and you measure their A1C, an indicator of
+  their average blood sugar over the past month.  The values for the
+  control group and experimental group are shown in Table~\ref{tab:dpp},
+  and you want to know if the new delivery method lowers their blood
+  sugar. Assume the variability in the population is the same for both groups.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference in blood sugar levels between the control
+        and experimental groups
+      \end{solution}
+      \part[1] What is the alternative hypothesis? 
+      \begin{solution}
+        There is a difference in blood sugar levels between the control
+        and experimental groups.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \begin{solution}
+        48
+      \end{solution}
+      \part[2] What is the critical t-value for Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=dppcritt,echo=FALSE,results=tex>>=
+  print(qt(0.05,df=48))
+@ 
+      \end{solution}
+      \part[2] What is the t-value for the difference in means?
+      \begin{solution}
+<<label=dppcritt,echo=FALSE,results=tex>>=
+  t.dpp <- t.test(Control.dpp,Experimental.dpp,alternative="two.sided")
+  noquote(t.dpp$statistic)
+@ 
+      \end{solution}
+      \part[2] What is the corresponding p-value?
+      \begin{solution}
+<<label=dppcritt,echo=FALSE,results=tex>>=
+  noquote(t.dpp$p.value)
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a \emph{two-tailed} Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=dppcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(t.dpp$p.value<0.05,"Yes","No"))
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a \emph{two-tailed} Type I error
+      rate ($\alpha$) = 0.01?
+      \begin{solution}
+<<label=dppcritt,echo=FALSE,results=tex>>=
+noquote(ifelse(t.dpp$p.value<0.01,"Yes","No"))
+@ 
+      \end{solution}
+  \end{parts}
+
+
+  \question A friend of yours told you that men who are born on the east
+  coast have bigger hands than men who are born on the west coast.  Being a
+  smart, skeptical scientist, you decide to test the hypothesis by asking
+  all of your male friends to measure their hands and tell you what they
+  found. More of your east coast friends responded, and
+  table~\ref{tab:hands} shows the measurements.  Assume the populations
+  have equal variance.
+    \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference between the hand sizes of east coast and
+        west coast men.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \part[2] What is the critical t-value?
+      \part[2] What is the t-value for the difference in means?
+      \part[2] What is the p-value?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+    \end{parts}
+
+%
+<<label=grades,echo=FALSE>>=
+Section.A <- round(sample(rnorm(10000,mean=85,sd=10),20),0)
+Section.B <- round(sample(rnorm(10000,mean=80,sd=10),30),0)
+Section.A[Section.A>100] <- 100
+Section.B[Section.B>100] <- 100
+Grades <- data.frame(c(Section.A,rep(" ",10)),Section.B)
+names(Grades) <- c("Section A", "Section B")
+write.csv(Grades,'data/Grades_UNIQUEKEY.csv')
+@ 
+%
+
+  \question You're a new assistant professor, teaching an introductory
+  statistics class, and you have two sections.  You're worried that you're
+  doing a better job teaching the material to one section than the other,
+  so you decide to compare the scores of the two sections on a recent
+  homework. Table~\ref{tab:grades} shows the scores of the students.
+  Assume the grades have the same variability across sections.
+
+  \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference between the sections
+      \end{solution}
+      \part[2] What are the average scores for the two sections?
+      \begin{solution}
+<<label=gradesmeans,echo=FALSE,results=tex>>=
+noquote(paste("Section A: ",mean(Section.A),"; Section B: ",mean(Section.B)))
+@ 
+      \end{solution}
+      \part[2] What are the standard deviations for the two sections?
+      \begin{solution}
+<<label=gradessds,echo=FALSE,results=tex>>=
+noquote(paste("Section A: ",sd(Section.A),"; Section B: ",sd(Section.B)))
+@ 
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \begin{solution}
+        48
+      \end{solution}
+      \part[2] What is the t-value for the difference in means?
+      \begin{solution}
+<<label=gradescritt,echo=FALSE,results=tex>>=
+  t.grades <- t.test(Section.A,Section.B,alternative="two.sided")
+  noquote(t.grades$statistic)
+@ 
+      \end{solution}
+      \part[2] What is the corresponding p-value?
+      \begin{solution}
+<<label=gradescritt,echo=FALSE,results=tex>>=
+  noquote(t.grades$p.value)
+@ 
+      \end{solution}
+      \part[1] Would you reject the null hypothesis with a \emph{two-tailed} Type I error
+      rate ($\alpha$) = 0.05?
+      \begin{solution}
+<<label=gradescritt,echo=FALSE,results=tex>>=
+noquote(ifelse(t.grades$p.value<0.05,"Yes","No"))
+@ 
+      \end{solution}
+  \end{parts}
+
+  \question Subway makes lots of claims in their advertisements that their
+  food is healthier than other fast food restaurants.  Table~\ref{tab:food}
+  shows the calorie counts for randomly selected items from the Burger King
+  and Subway menus.  Since Burger King offers a wider variety of items, you
+  cannot assume the variability in calories between restaurants is the same.
+    \begin{parts}
+      \part[1] What is the null hypothesis?
+      \begin{solution}
+        There is no difference between the hand sizes of east coast and
+        west coast men.
+      \end{solution}
+      \part[1] What are the degrees of freedom?
+      \part[2] What are the average calories for the two restaurants?
+      \part[2] What are the standard deviations for the two restaurants?
+      \part[2] What is the critical t-value?
+      \part[2] What is the t-value for the difference in means?
+      \part[2] What is the p-value?
+      \part[1] Would you reject the null hypothesis with a Type I error
+      rate ($\alpha$) = 0.05?
+    \end{parts}
+
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{|l|l|r|}
+        \hline
+        PLAYER & TEAM & SALARY \\
+        \hline
+        Barry Zito & San Francisco Giants & 18500000 \\
+        Scott Linebrink & Atlanta Braves & 5500000 \\
+        Ryan Madson & Philadelphia Phillies & 4833333 \\
+        Damaso Marte & New York Yankees & 4000000 \\
+        Jesse Crain & Chicago White Sox & 4000000 \\
+        Brandon Webb & Texas Rangers & 3000000 \\
+        Danys Baez & Philadelphia Phillies & 2750000 \\
+        Trever Miller & St. Louis Cardinals & 2000000 \\
+        Rich Harden & Oakland Athletics & 1500000 \\
+        Brett Anderson & Oakland Athletics & 1250000 \\
+        Jeremy Accardo & Baltimore Orioles & 1080000 \\
+        Jamey Wright & Seattle Mariners & 900000 \\
+        Joe Smith & Cleveland Indians & 870000 \\
+        Glen Perkins & Minnesota Twins & 700000 \\
+        Taylor Buchholz & New York Mets & 600000 \\
+        Mike MacDougal & Los Angeles Dodgers & 500000 \\
+        Brett Cecil & Toronto Blue Jays & 443100 \\
+        Wilton Lopez & Houston Astros & 442000 \\
+        Charlie Morton & Pittsburgh Pirates & 441000 \\
+        Jason Motte & St. Louis Cardinals & 435000 \\
+        Kris Medlen & Atlanta Braves & 429500 \\
+        Blake Hawksworth & Los Angeles Dodgers & 426000 \\
+        Mike Leake & Cincinnati Reds & 425000 \\
+        Travis Wood & Cincinnati Reds & 422500 \\
+        Sean O`Sullivan & Kansas City Royals & 420500 \\
+        Frank Herrmann & Cleveland Indians & 419800 \\
+        Aneury Rodriguez & Houston Astros & 414000 \\
+        Brayan Villarreal & Detroit Tigers & 414000 \\
+        Brian Broderick & Washington Nationals & 414000 \\
+        Brandon Kintzler & Milwaukee Brewers & 414000 \\
+        Josh Lueke & Seattle Mariners & 414000 \\
+        \hline
+        \hline
+        Johan Santana & New York Mets & 21644707 \\
+        \hline
+      \end{tabular}
+      \caption{Salaries for a random subset of MLB pitchers and John
+        Santana}
+      \label{tab:mets}
+    \end{center}
+  \end{table}
+
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{l|c|r|r}
+        Company & Ticker & IPO Price & Today's Price \\
+        \hline
+        Alimera Sciences & ALIM & 11.00 & 6.73 \\
+        Andatee China Marine Fuel & AMCF & 6.30 & 2.77 \\
+        Anthera Pharmaceuticals & ANTH & 7.00 & 6.12 \\
+        Alpha and Omega Semiconductor & AOSL & 18.00 & 7.76 \\
+        AVEO Pharmaceuticals & AVEO & 9.00 & 15.10 \\
+        CBOE Holdings & CBOE & 29.00 & 25.47 \\
+        Codexis & CDXS & 13.00 & 4.77 \\
+        China Electric Motor (CELM) & CELM & 4.50 & 0.13 \\
+        Charm Communications & CHRM & 9.50 & 8.70 \\
+        Convio & CNVO & 9.00 & 8.99 \\
+        DynaVox & DVOX & 15.00 & 3.40 \\
+        First Interstate BancSystem & FIBK & 14.50 & 11.56 \\
+        Financial Engines & FNGN & 12.00 & 21.01 \\
+        GenMark Diagnostics & GNMK & 6.00 & 5.44 \\
+        HiSoft Technology Int'l & HSFT & 10.00 & 10.41 \\
+        China Lodging Group & HTHT & 12.25 & 13.00 \\
+        Ironwood Pharmaceuticals & IRWD & 11.25 & 11.40 \\
+        Kingtone Wirelessinfo & KONE & 4.00 & 0.71 \\
+        Meru Networks & MERU & 15.00 & 6.45 \\
+        Mitel Networks & MITL & 14.00 & 2.25 \\
+        Motricity & MOTR & 10.00 & 1.81 \\
+        Quinstreet & QNST & 15.00 & 11.36 \\
+        ReachLocal & RLOC & 13.00 & 10.06 \\
+        SS\&C Technologies & SSNC & 15.00 & 14.85 \\
+        TeleNav & TNAV & 8.00 & 8.65 \\
+        Tengion & TNGN & 5.00 & 0.50 \\
+        Tesla Motors & TSLA & 17.00 & 27.56 \\ 
+      \end{tabular}
+      \caption{Initial Public Offerings (IPOs) from 2010 and value of the
+        stock today}
+      \label{tab:ipos}
+    \end{center}
+  \end{table}
+
+<<label=diet2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Weights.t1,Weights.t2), caption = "Weights of participants before and after diet", label = "tab:diet", table.placement = "ht", caption.placement = "top"))
+@ 
+%    
+
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{l|c|l|c}
+        \multicolumn{2}{c}{Knicks} & \multicolumn{2}{|c}{Spurs} \\
+        \hline
+        Opponent & Score & Opponent & Score \\
+        \hline
+        Denver Nuggets & 100 & Memphis Grizzlies & 105 \\
+        Utah Jazz & 97 & Houston Rockets & 78 \\
+        Charlotte Bobcats & 111 & at New Orleans Hornets & 112 \\
+        Chicago Bulls & 103 & Milwaukee Bucks & 107 \\
+        at Philadelphia 76ers & 77 & Utah Jazz & 106 \\
+        Detroit Pistons & 151 & Atlanta Hawks & 95 \\
+        at Phoenix Suns & 86 & at Cleveland Cavaliers & 78 \\
+        at Los Angeles Clippers & 80 & at Minnesota Timberwolves & 101 \\
+        at Sacramento Kings & 100 & Dallas Mavericks & 85 \\
+        at Portland Trailblazers & 99 & at Memphis Grizzlies & 110 \\
+        at Seattle Supersonics & 111 & Portland Trailblazers & 98 \\
+        Philadelphia 76ers & 106 & at Denver Nuggets & 92 \\
+        Charlotte Bobcats & 110 & Washington Wizards & 93 \\
+        Sacramento Kings & 102 & at Chicago Bulls & 87 \\
+        at Washington Wizards & 98 & Los Angeles Lakers & 96 \\
+        New Jersey Nets & 100 & New Orleans Hornets & 99 \\
+        at Indiana Pacers & 108 & at Philadelphia 76ers & 99 \\
+        at Miami Heat & 83 & at Boston Celtics & 93 \\
+        Phoenix Suns & 107 & Houston Rockets & 85 \\
+        Miami Heat & 116 & Memphis Grizzlies & 112 \\
+        at Milwaukee Bucks & 105 & at Los Angeles Lakers & 96 \\
+        Los Angeles Lakers & 99 & at Utah Jazz & 93 \\
+        at Charlotte Bobcats & 87 & at Phoenix Suns & 87 \\
+        at Orlando Magic & 94 & at Washington Wizards & 110 \\
+        Los Angeles Clippers & 102 & at Orlando Magic & 104 \\
+        at Utah Jazz & 102 & at Miami Heat & 85 \\
+        at Los Angeles Lakers & 107 & at New Jersey Nets & 107 \\
+        at Golden State Warriors & 101 & at Detroit Pistons & 90 \\
+        Orlando Magic & 100 & Denver Nuggets & 95 \\
+        at Philadelphia 76ers & 84 & at Atlanta Hawks & 103 \\
+        Milwaukee Bucks & 95 & Seattle Supersonics & 102 \\
+        \hline
+      \end{tabular}
+      \caption{Scores for New York Knicks and San Antonio Spurs for random
+        set of games in 2006.}
+      \label{tab:knicks}
+    \end{center}
+  \end{table}
+
+<<label=dpp2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Control.dpp,Experimental.dpp), caption = "Blood sugar levels of the study participants", label = "tab:dpp", table.placement = "ht", caption.placement = "top"))
+@ 
+%    
+
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{|r|r|}
+        \hline
+        East Coast & West Coast \\
+        \hline
+        5.87 & 4.93 \\
+        6.44 & 5.54 \\
+        5.66 & 5.71 \\
+        5.98 & 5.96 \\
+        5.77 & 5.24 \\
+        5.82 & 6.03 \\
+        5.40 & 5.88 \\
+        6.33 & 6.35 \\
+        5.39 & 6.30 \\
+        5.38 & 5.96 \\
+        5.98 & 5.39 \\
+        5.69 & 5.26 \\
+        5.79 & 5.75 \\
+        6.13 & 5.20 \\
+        6.49 & 6.01 \\
+        6.01 & 5.19 \\
+        5.93 & 5.79 \\
+        5.33 & 5.77 \\
+        6.23 & 6.42 \\
+        6.74 & 5.52 \\
+        5.72 & 4.90 \\
+        5.26 &  \\
+        6.27 &  \\
+        5.40 &  \\
+        5.50 &  \\
+        6.65 &  \\
+        6.69 &  \\
+        5.63 &  \\
+        5.98 &  \\
+        6.26 &  \\
+        6.39 &  \\
+        6.84 &  \\
+        5.84 &  \\
+        6.12 &  \\
+        \hline
+      \end{tabular}
+      \caption{Measurements of hands from palm to fingertip for all of your
+      guy friends that you know from the east and west coast.}
+      \label{tab:hands}
+    \end{center}
+  \end{table}
+
+<<label=grades2table,echo=FALSE,results=tex>>=
+print(xtable(Grades, caption = "Grades on a recent homework for two sections of a statistics class", label = "tab:grades", table.placement = "ht", caption.placement = "top",align="rrr",digits=0),include.rownames=FALSE)
+@ 
+%    
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{|l|r|l|r|}
+        \hline
+        \multicolumn{2}{|c|}{Burger King} & \multicolumn{2}{|c|}{Subway} \\
+        \hline
+        Food & Calories & Food & Calories \\
+        \hline
+        Regular Fries & 500 & Oven Roasted Sandwich & 310 \\
+        Fries, no salt & 500 & Cheese Sandwich & 400 \\
+        Regular Hamburger & 290 & Chipotle Steak \& Cheese Sandwich & 580 \\
+        Whopper & 670 & Double Bacon \& Cheese Sandwich & 500 \\
+        Whopper (cheese) & 760 & Honey Mustard Ham \& Cheese Sandwich & 460 \\
+        Double Whopper & 900 & Western Sandwich (cheese) & 440 \\
+        Double Whopper (cheese) & 990 & Cheese Wrap & 390 \\
+        Triple Whopper & 1130 & Chipotle Steak \& Cheese Wrap & 570 \\
+        Triple Whopper (cheese) & 1230 & Double Bacon \& Cheese Wrap & 480 \\
+        Whopper Jr. & 370 & Honey Mustard Ham \& Cheese Wrap & 450 \\
+        Whopper Jr. (cheese) & 410 & Western Wrap (cheese) & 420 \\
+        Double Hamburger & 410 &  &  \\
+        Double Stacker & 610 &  &  \\
+        Triple Stacker & 800 &  &  \\
+        Quad Stacker & 1000 &  &  \\
+        Double Cheeseburger & 500 &  &  \\
+        Chicken Tenders (6pc) & 250 &  &  \\
+        Chicken Fries (6pc) & 260 &  &  \\
+        TENDERGRILL (with mayo) & 510 &  &  \\
+        TENDERCRISP & 790 &  &  \\
+        Original & 660 &  &  \\
+        Chick'n Crisp (with mayo) & 480 &  &  \\
+        \hline
+      \end{tabular}
+      \caption{Calories for a random subset of items from Burger King and Subway}
+      \label{tab:food}
+    \end{center}
+  \end{table}
+
+\newpage
+.  
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

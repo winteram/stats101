@@ -1,0 +1,358 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 7 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 11/3 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 7 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+%%%%%%%%  Problem 1
+
+%
+<<label=procrast,echo=FALSE>>=
+  rho <- 0.7
+  zO <- sort(sample(rnorm(10000),28),decreasing=TRUE)
+  zC <- rho*zO + sqrt( 1 - rho^2 )*sample(rnorm(10000),28)
+  Oil <- round(zO * 0.25 + 3.4,2)
+  Crime <- round(zC * 2.5 + 17,1)
+  write.csv(data.frame(Oil,Crime),'data/Oil_UNIQUEKEY.csv')
+@ 
+ 
+  \question You measure the price of gasoline and the frequency of violent
+  crimes in a random sample of 30 counties in the U.S.A.
+  Table~\ref{tab:oilcrime} shows the price per gallon and average number of
+  violent crimes per month for each county.
+    \begin{parts}
+      \part[1] What is the average price per gallon in the sample?
+      \begin{solution}
+<<label=oilmean,echo=FALSE,results=tex>>=
+  print(mean(Oil))
+@ 
+      \end{solution}
+      \part[1] What is the average number of violent crimes per month in the sample?
+      \begin{solution}
+<<label=crimemean,echo=FALSE,results=tex>>=
+  print(mean(Crime))
+@ 
+      \end{solution}
+      \part[2] What is the sample standard deviation for the price per gallon in the sample?
+      \begin{solution}
+<<label=oilsd,echo=FALSE,results=tex>>=
+  print(sd(Oil))
+@ 
+      \end{solution}
+      \part[2] What is the sample standard deviation for the number of violent crimes per month in the sample?
+      \begin{solution}
+<<label=crimesd,echo=FALSE,results=tex>>=
+  print(sd(Crime))
+@ 
+      \end{solution}
+      \part[10] What is the correlation coefficient between these variables?
+      \begin{solution}
+<<label=oilcrimecor,echo=FALSE,results=tex>>=
+  r <- cor(Oil, Crime)
+  print(r)
+@ 
+      \end{solution}
+    \part[5] Calculate the t-value for the correlation.
+      \begin{solution}
+<<label=corrttest,echo=FALSE,results=tex>>=
+  print(r * sqrt(28) / sqrt(1 + r^2))
+@ 
+      \end{solution}
+      \part[1] How many degrees of freedom are there?
+      \begin{solution}
+        28
+      \end{solution}
+      \part[1] What is the critical t-value for a two-tailed Type I error rate of 0.01?
+      \begin{solution}
+<<label=corrttest,echo=FALSE,results=tex>>=
+  print(qt(0.995,28))
+@        
+      \end{solution}
+      \part[1] Should you reject the null hypothesis that there is no
+      relationship between the variables with a two-tailed Type I error
+      rate of 0.01?
+
+      \part[8] Given the price of gasoline in Hoboken this month is
+      \$3.34, how many violent crimes should the police deparment expect?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  oc.lm <- lm(Crime ~ Oil)
+  print(oc.lm$coefficients["Oil"] * 3.34 + oc.lm$coefficients["(Intercept)"])
+@ 
+      \end{solution}
+      \part[8] Given the price of gasoline in Lower East Side this month is
+      \$4.29, how many violent crimes should the police deparment expect?
+      \begin{solution}
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  oc.lm <- lm(Crime ~ Oil)
+  print(oc.lm$coefficients["Oil"] * 4.29 + oc.lm$coefficients["(Intercept)"])
+@ 
+      \end{solution}
+    \end{parts}
+
+%%%%%%%%  Problem 2
+
+%
+<<label=procrast,echo=FALSE>>=
+  Eng <- sort(round(sample(rnorm(10000),15) * 0.3 + 3.2,1),decreasing=T)
+  Eng[Eng>4] <- 4
+  Eng[Eng<0] <- 0
+  SSE <- sort(round(sample(rnorm(10000),15) * 0.8 + 2.5,1),decreasing=T)
+  SSE[SSE>4] <- 4
+  SSE[SSE<0] <- 0
+  Howe <- sort(round(sample(rnorm(10000),15) * 0.9 + 2.8,1),decreasing=T)
+  Howe[Howe>4] <- 4
+  Howe[Howe<0] <- 0
+  Arts <- sort(round(sample(rnorm(10000),15) * 0.5 + 2.4,1),decreasing=T)
+  Arts[Arts>4] <- 4
+  Arts[Arts<0] <- 0
+  G <- data.frame(School.Eng=Eng,School.SSE=SSE,School.Howe=Howe,School.Arts=Arts)
+  G.long <- reshape(G, direction="long", varying=names(G))
+  names(G.long) <- c("School","Grade","id")
+  write.csv(G.long,'data/Schools_UNIQUEKEY.csv')
+@ 
+
+\question President Farvardin wants to know if any school at Stevens is
+outperforming any of the other schools.  You take a random sample of
+students from each school and find out their GPA, shown in
+Table~\ref{tab:schools}. 
+
+\begin{parts}
+  \part[1] What is the average grade for the sample of Engineering
+  students?
+  \begin{solution}
+<<label=meaneng,echo=FALSE,results=tex>>=
+  print(mean(Eng))
+@ 
+  \end{solution}
+  \part[1] What is the average grade for the sample of Systems \& Engineering
+  students?
+  \begin{solution}
+<<label=meansse,echo=FALSE,results=tex>>=
+  print(mean(SSE))
+@ 
+  \end{solution}
+  \part[1] What is the average grade for the sample of Howe School
+  students?
+  \begin{solution}
+<<label=meanhowe,echo=FALSE,results=tex>>=
+  print(mean(Howe))
+@ 
+  \end{solution}  \part[1] What is the average grade for the sample of Arts
+\& Letters students?
+  \begin{solution}
+<<label=meanarts,echo=FALSE,results=tex>>=
+  print(mean(Arts))
+@ 
+  \end{solution}
+  \part[2] What is the sample standard deviation of grades for the Engineering
+  students?
+  \begin{solution}
+<<label=sdeng,echo=FALSE,results=tex>>=
+  print(sd(Eng))
+@ 
+  \end{solution}
+  \part[2] What is the sample standard deviation of grades for the Systems \& Engineering
+  students?
+  \begin{solution}
+<<label=sdsse,echo=FALSE,results=tex>>=
+  print(sd(SSE))
+@ 
+  \end{solution}
+  \part[2] What is the sample standard deviation of grades for the Howe School
+  students?
+  \begin{solution}
+<<label=sdhowe,echo=FALSE,results=tex>>=
+  print(sd(Howe))
+@ 
+  \end{solution}  
+  \part[2] What is the sample standard deviation of grades
+for the Arts \& Letters students?
+  \begin{solution}
+<<label=sdarts,echo=FALSE,results=tex>>=
+  print(sd(Arts))
+@ 
+  \end{solution}
+  \part[3] What is the grand mean grade for all students in the sample?
+  \begin{solution}
+<<label=grandmean,echo=FALSE,results=tex>>=
+  gm <- mean(G.long$Grade)
+  print(gm)
+@ 
+  \end{solution}
+  \part[5] What is the between-groups mean squared error?
+  \begin{solution}
+<<label=ssb,echo=FALSE,results=tex>>=
+  MSB <- (length(Eng)*(mean(Eng)-gm)^2 + length(SSE)*(mean(SSE)-gm)^2 +length(Howe)*(mean(Howe)-gm)^2 +length(Arts)*(mean(Arts)-gm)^2)/3
+print(MSB)
+@ 
+  \end{solution}
+  \part[5] What is the within-groups mean squared error?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  MSW <- ((length(Eng)-1)*(sd(Eng))^2 + (length(SSE)-1)*(sd(SSE))^2 + (length(Howe)-1)*(sd(Howe))^2 + (length(Arts)-1)*(sd(Arts))^2)/(nrow(G.long)-4)
+  print(MSW)
+@ 
+  \end{solution}
+  \part[4] What is the F-statistic for this analysis of variance (ANOVA)?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  print(MSB/MSW)
+@ 
+  \end{solution}
+  \part[2] What are the degrees of freedom (numerator, denominator) for
+  this ANOVA?
+  \begin{solution}
+<<label=schooldf,echo=FALSE,results=tex>>=
+  cat(paste("3, ",(nrow(G.long)-4)))
+@ 
+  \end{solution}
+  \part[2] What is the critical F-vaue for those degrees of freedom?
+  \begin{solution}
+<<label=schooldf,echo=FALSE,results=tex>>=
+  print(qf(0.95,3,(nrow(G.long)-4)))
+@ 
+  \end{solution}
+  \part[2] Can you reject the null hypothesis?
+\end{parts}
+
+%%%%%%%%  Problem 3
+
+%
+<<label=invests,echo=FALSE>>=
+  Stock <- sort(round(sample(rnorm(10000),19) * 16 + 52,1),decreasing=T)
+  Bond <- sort(round(sample(rnorm(10000),15) * 8 + 30,1),decreasing=T)
+  Mutual <- sort(round(sample(rnorm(10000),21) * 4 + 45,1),decreasing=T)
+  Futures <- sort(round(sample(rnorm(10000),9) * 5 + 40,1),decreasing=T)
+  Index <- sort(round(sample(rnorm(10000),7) * 5 + 40,1),decreasing=T)
+  vest <- data.frame(c(rep("Stocks",19),rep("Bond",15),rep("Mutual",21),rep("Futures",9),rep("Index",7)),c(Stock,Bond,Mutual,Futures,Index))
+  names(vest) <- c("Investment","Return")
+  write.csv(vest,'data/Invest_UNIQUEKEY.csv')
+@ 
+
+\question You want to know whether different investment types give
+different returns.  A random sample of 19 stocks has an average annual
+return of \$~
+<<label=stockmean,echo=FALSE,results=tex>>=
+cat(round(mean(Stock),2))
+@ 
+ with a standard deviation of \$~
+<<label=stocksd,echo=FALSE,results=tex>>=
+cat(round(sd(Stock),2))
+@ 
+. A random sample of 15 bonds has an average annual
+return of \$~
+<<label=bondmean,echo=FALSE,results=tex>>=
+cat(round(mean(Bond),2))
+@ 
+ with a standard deviation of \$~
+<<label=bondsd,echo=FALSE,results=tex>>=
+cat(round(sd(Bond),2))
+@ 
+. A random sample of 21 mutual funds has an average annual
+return of \$~
+<<label=mutualmean,echo=FALSE,results=tex>>=
+cat(round(mean(Mutual),2))
+@ 
+ with a standard deviation of \$~
+<<label=mutualsd,echo=FALSE,results=tex>>=
+cat(round(sd(Mutual),2))
+@ 
+. A random sample of 9 commodity futures has an average annual
+return of \$~
+<<label=futuresmean,echo=FALSE,results=tex>>=
+cat(round(mean(Futures),2))
+@ 
+ with a standard deviation of \$~
+<<label=futuressd,echo=FALSE,results=tex>>=
+cat(round(sd(Futures),2))
+@ 
+. Finally, a random sample of 7 index funds has an average annual
+return of \$~
+<<label=indexmean,echo=FALSE,results=tex>>=
+cat(round(mean(Index),2))
+@ 
+ with a standard deviation of \$~
+<<label=indexsd,echo=FALSE,results=tex>>=
+cat(round(sd(Index),2))
+@ 
+.
+
+\begin{parts}
+  \part[5] What is the grand mean return for all investment types in the sample?
+  \begin{solution}
+<<label=grandmean,echo=FALSE,results=tex>>=
+  gm <- mean(vest$Return)
+  print(gm)
+@ 
+  \end{solution}
+  \part[5] What is the between-groups sum of squared deviations?
+  \begin{solution}
+<<label=ssb,echo=FALSE,results=tex>>=
+  SSB <- (length(Stock)*(mean(Stock)-gm)^2 + length(Bond)*(mean(Bond)-gm)^2 +length(Mutual)*(mean(Mutual)-gm)^2 + length(Futures)*(mean(Futures)-gm)^2 + length(Index)*(mean(Index)-gm)^2)/4
+print(SSB)
+@ 
+  \end{solution}
+  \part[5] What is the within-groups sum of squared deviations?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  SSW <- ((length(Stock)-1)*(sd(Stock))^2 + (length(Bond)-1)*(sd(Bond))^2 + (length(Mutual)-1)*(sd(Mutual))^2 + (length(Futures)-1)*(sd(Futures))^2 + (length(Index)-1)*(sd(Index))^2)/(nrow(vest)-5)
+  print(SSW)
+@ 
+  \end{solution}
+  \part[4] What is the F-statistic for this analysis of variance (ANOVA)?
+  \begin{solution}
+<<label=ssw,echo=FALSE,results=tex>>=
+  print(SSB/SSW)
+@ 
+  \end{solution}
+  \part[2] What are the degrees of freedom (numerator, denominator) for
+  this ANOVA?
+  \begin{solution}
+<<label=vestdf,echo=FALSE,results=tex>>=
+  cat(paste("3, ",(nrow(vest)-4)))
+@ 
+  \end{solution}
+  \part[2] What is the critical F-vaue for those degrees of freedom?
+  \begin{solution}
+<<label=vestcrit,echo=FALSE,results=tex>>=
+  print(qf(0.95,3,(nrow(vest)-4)))
+@ 
+  \end{solution}
+  \part[2] Can you reject the null hypothesis?
+\end{parts}
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+%
+<<label=oilcrimetable,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Oil,Crime), caption = "Price of gasoline and average number of crimes per month in a sample of 30 counties", label = "tab:oilcrime", table.placement = "ht", caption.placement = "top"))
+@ 
+
+%
+<<label=gradeTable,echo=FALSE,results=tex>>=
+print(xtable(G, caption = "Grades of 20 students randomly selected from each school", label = "tab:schools", table.placement = "ht", caption.placement = "top"))
+@ 
+
+
+\end{document}

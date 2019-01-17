@@ -1,0 +1,411 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+
+\ifprintanswers
+\pointformat{(\thepoints)}
+\bonuspointformat{\thepoints bonus}
+\else
+\pointformat{}
+\bonuspointformat{}
+\fi
+
+\begin{document}
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 2 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 9/13 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 1 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+
+%% DATA SET 1
+<<label=themepark,echo=FALSE>>=
+  library(xtable)
+  Theme.Park <- c("Adventuredome","Beach Boardwalk","Busch Gardens","Cedar Point","Disney World","Disneyland","Dollywood","Hershey Park","Kennywood","Kings Dominion","Legoland","Luna Park","Six Flags Great Adventure","Universal Studios","Wild World")
+  Admission.Prices <- round(sample(c(rnorm(10000,mean=60,sd=10),rnorm(300,mean=90,sd=10)),15))
+  tab1 <- data.frame(Theme.Park,Admission.Prices)
+  tab1 <- tab1[with(tab1,order(-Admission.Prices)),]
+@
+
+%% QUESTION 1
+  \question Table~\ref{tab:themepark} is a list of admission prices at theme parks.
+    \begin{parts}
+      \part[2] What is the median admission price?
+        \begin{solution} 
+<<label=tab1s1,echo=FALSE>>=
+median(Admission.Prices)
+@ 
+        \end{solution}
+      \part[2] What is the 25th percentile for admission price?
+        \begin{solution} 
+<<label=tab1s2,echo=FALSE>>=
+quantile(Admission.Prices,0.25,type=1)
+@ 
+        \end{solution}
+      \part[2] What is the 75th percentile for admission price?
+        \begin{solution} 
+<<label=tab1s3,echo=FALSE>>=
+quantile(Admission.Prices,0.75,type=1)
+@ 
+        \end{solution}
+      \part[2] What would be the percentile of an admission price of \$75?
+        \begin{solution} 
+<<label=tab1s4,echo=FALSE>>=
+length(Admission.Prices[Admission.Prices < 75]) / length(Admission.Prices) * 100
+@ 
+        \end{solution}
+      \part[2] What would be the percentile of an admission price of \$50?
+        \begin{solution} 
+<<label=tab1s5,echo=FALSE>>=
+  length(Admission.Prices[Admission.Prices < 50]) / length(Admission.Prices) * 100
+@ 
+        \end{solution}
+    \end{parts}
+
+
+%% TABLE 1
+<<label=tab1,echo=FALSE,results=tex>>=
+  colnames(tab1) <- c("Theme Park","Admission Price")
+  print(xtable(tab1, caption = "Theme Park Admission Prices", label = "tab:themepark", table.placement = "ht", caption.placement = "top", align="crc"), include.rownames = FALSE)
+@ 
+
+\newpage
+
+%% DATA SET 2
+<<label=heights,echo=FALSE>>=
+  Height <- round(sample(c(rnorm(10000,mean=64,sd=8),rnorm(10000,mean=70,sd=8)),24))
+  while(floor(mean(Height)*2) != mean(Height)*2) {
+    Height <- round(sample(c(rnorm(10000,mean=64,sd=8),rnorm(10000,mean=70,sd=8)),24))
+  }
+  Ht.dev <- Height - mean(Height)
+  Ht.sqdev <- (Ht.dev)^2
+  Deviation <- rep("",length(Height))
+  Deviation2 <- rep("",length(Height))
+  row.2.last <- c("Mean ($\\mu$)","","Sum")
+  row.last.1 <- c(mean(Height),"",sum(Ht.sqdev)) 
+  row.last.2 <- c("","","")
+  tab2.1 <- as.matrix(data.frame(rbind(cbind(Height,Ht.dev,Ht.sqdev),row.2.last,row.last.1)))
+  tab2.2 <- as.matrix(data.frame(rbind(cbind(Height,Deviation,Deviation2),row.2.last,row.last.2)))
+@
+
+%% QUESTION 2 
+  \question Table~\ref{tab:height} shows the recorded heights of 24 train passengers.
+    \begin{parts}
+      \part[10] Fill in the blanks to complete the table for calculating
+      the sum of squared deviations.
+      \part[3] What is the variance of heights?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+var(Height)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of heights?
+        \begin{solution} 
+<<label=tab2s3,echo=FALSE>>=
+sd(Height)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for heights?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+sd(Height) / mean(Height)
+@ 
+        \end{solution}
+      \bonuspart[2] How many standard deviations above average is the
+      maximum height?
+        \begin{solution} 
+<<label=tab1s6,echo=FALSE>>=
+(max(Height)-mean(Height))/sd(Height)
+@ 
+        \end{solution}
+    \end{parts}
+
+\ifprintanswers
+<<label=tab21,echo=FALSE,results=tex>>=
+  colnames(tab2.1) <- c("$Height$","$Height - \\mu$","${(Height - \\mu)}^2$")
+  print(xtable(tab2.1, caption = "Heights", label = "tab:height", table.placement = "ht", caption.placement = "top", align="c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Height),seq(from=-1,to=nrow(tab2.1),by=1)))
+@ 
+\else
+%
+<<label=tab22,echo=FALSE,results=tex>>=
+  colnames(tab2.2) <- c("$Height$","$Height - \\mu$","${(Height - \\mu)}^2$")
+  print(xtable(tab2.2, caption = "Heights", label = "tab:height", table.placement = "ht", caption.placement = "top", align="c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Height),seq(from=-1,to=nrow(tab2.2),by=1)))
+@ 
+\fi
+
+\newpage
+%% DATA SET 3
+<<label=hotels,echo=FALSE>>=
+  Hotels <- c("Ritz-Carlton","Kimpton","Hilton","Marriott","Hyatt","Larkspur","Rennaissance","Residence Inn","Doubletree","Hampton","Holiday Inn","Travelodge","Comfort Inn","Howard Johnson","Sleep Inn")
+  Room.Prices <- round(sample(rnorm(10000,mean=150,sd=10),15))
+  while(floor(mean(Room.Prices)*2) != mean(Room.Prices)*2) {
+    Room.Prices <- round(sample(rnorm(10000,mean=150,sd=10),15))
+  }
+  Room.Prices <- sort(Room.Prices, decreasing=TRUE)
+  RP.dev <- Room.Prices - mean(Room.Prices)
+  RP.sqdev <- (RP.dev)^2
+  Deviation <- rep("",length(Room.Prices))
+  Deviation2 <- rep("",length(Room.Prices))
+  row.2.last <- c("","Mean ($\\mu$)","","Sum")
+  row.last.1 <- c("",mean(Room.Prices),"",sum(RP.sqdev)) 
+  row.last.2 <- c("","","","")
+  tab3.1 <- data.frame(rbind(cbind(Hotels,Room.Prices,RP.dev,RP.sqdev),row.2.last,row.last.1))
+  tab3.2 <- data.frame(rbind(cbind(Hotels,Room.Prices,Deviation,Deviation2),row.2.last,row.last.2))
+@
+
+%% QUESTION 3
+  \question Table~\ref{tab:hotels} is a list of nightly room prices at
+  different hotel chains.
+    \begin{parts}
+      \part[2] What is the median room price?
+        \begin{solution} 
+<<label=tab1s1,echo=FALSE>>=
+median(Room.Prices)
+@ 
+        \end{solution}
+      \part[2] What is the 25th percentile for room price?
+        \begin{solution} 
+<<label=tab1s2,echo=FALSE>>=
+quantile(Room.Prices,0.25,type=1)
+@ 
+        \end{solution}
+      \part[2] What is the 75th percentile for room price?
+        \begin{solution} 
+<<label=tab1s3,echo=FALSE>>=
+quantile(Room.Prices,0.75,type=1)
+@ 
+        \end{solution}
+      \part[2] What would be the percentile of a room that cost \$150 per night?
+        \begin{solution} 
+<<label=tab1s4,echo=FALSE>>=
+length(Room.Prices[Room.Prices < 150]) / length(Room.Prices) * 100
+@ 
+        \end{solution}
+      \part[2] What would be the percentile of a room that cost \$160 per night?
+        \begin{solution} 
+<<label=tab1s5,echo=FALSE>>=
+  length(Room.Prices[Room.Prices < 160]) / length(Room.Prices) * 100
+@ 
+        \end{solution}
+      \part[10] Fill in the blanks to complete the table for calculating
+      the sum of squared deviations.
+      \part[3] What is the variance of room prices?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+var(Room.Prices)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of room prices?
+        \begin{solution} 
+<<label=tab2s3,echo=FALSE>>=
+sd(Room.Prices)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for room prices?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+sd(Room.Prices) / mean(Room.Prices)
+@ 
+        \end{solution}
+      \bonuspart[2]  How many standard deviations above average is the
+      maximum price?
+        \begin{solution} 
+<<label=tab1s6,echo=FALSE>>=
+(max(Room.Prices)-mean(Room.Prices))/sd(Room.Prices)
+@ 
+        \end{solution}
+
+    \end{parts}
+
+
+%% TABLE 3
+\ifprintanswers
+<<label=tab31,echo=FALSE,results=tex>>=
+  colnames(tab3.1) <- c("$Hotel$","$Room Price$","$Price - \\mu$","${(Price - \\mu)}^2$")
+  print(xtable(tab3.1, caption = "Hotel Room Prices", label = "tab:hotels", table.placement = "ht", caption.placement = "top", align="c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Room.Prices),seq(from=-1,to=nrow(tab3.1),by=1)))
+@ 
+\else
+%
+<<label=tab32,echo=FALSE,results=tex>>=
+  colnames(tab3.2) <- c("$Hotel$","$Room Price$","$Price - \\mu$","${(Price - \\mu)}^2$")
+  print(xtable(tab3.2, caption = "Hotel Room Prices", label = "tab:hotels", table.placement = "ht", caption.placement = "top", align="c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = c(1+length(Room.Prices),seq(from=-1,to=nrow(tab3.2),by=1)))
+@ 
+\fi
+
+\newpage
+%% DATA SET 4
+<<label=stocks,echo=FALSE>>=
+  Trade.Dates <- c("Jan 2010","Feb 2010","Mar 2010","Apr 2010","May 2010","Jun 2010","Jul 2010","Aug 2010","Sep 2010","Oct 2010","Nov 2010","Dec 2010","Jan 2011","Feb 2011","Mar 2011","Apr 2011","May 2011","Jun 2011","Jul 2011","Aug 2011")
+  Trade.Volume <- round(sample(rnorm(10000,mean=15000,sd=1000),length(Trade.Dates)))
+  Stock.Price <-  round(sample(rnorm(10000,mean=15,sd=5),length(Trade.Dates)),2)
+  tab4 <- data.frame(Trade.Dates,Trade.Volume,Stock.Price)
+@
+
+%% QUESTION 4
+  \question Table~\ref{tab:stocks} shows the average volume of trades and
+  stock price for each month since January 2010.
+    \begin{parts}
+      \part[5] What is the variance of trade volume?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+var(Trade.Volume)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of trade volume?
+        \begin{solution} 
+<<label=tab2s3,echo=FALSE>>=
+sd(Trade.Volume)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for trade volume?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+sd(Trade.Volume) / mean(Trade.Volume)
+@ 
+        \end{solution}
+      \part[5] What is the variance of stock price?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+var(Stock.Price)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of stock price?
+        \begin{solution} 
+<<label=tab2s3,echo=FALSE>>=
+sd(Stock.Price)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for stock price?
+        \begin{solution} 
+<<label=tab2s2,echo=FALSE>>=
+sd(Stock.Price) / mean(Stock.Price)
+@ 
+        \end{solution}
+      \part[1] Which is more variable, stock prices or trade volume?
+        \begin{solution}
+          Trade Volume
+        \end{solution}
+      \part[1] Which is more variable \emph{relative to the mean}, stock
+      prices or trade volume?
+        \begin{solution}
+          Stock Prices
+        \end{solution}
+    \end{parts}
+
+%% TABLE 4
+<<label=tab4,echo=FALSE,results=tex>>=
+  colnames(tab4) <- c("Month","Trade Volume","Stock Price")
+  print(xtable(tab4, caption = "Trade volume and price for a stock", label = "tab:stocks", table.placement = "ht", caption.placement = "top", align="crcc"), include.rownames = FALSE)
+@ 
+
+
+\newpage
+%% DATA SET 5
+<<label=grades,echo=FALSE>>=
+  Grades <- round(sample(rnorm(10000,mean=2.7,sd=0.9),20),2)
+  while(min(Grades)<0 | max(Grades)>4) {
+      Grades <- round(sample(rnorm(10000,mean=2.7,sd=0.9),20),2)
+  }
+  Drinks <-  round(sample(rnorm(10000,mean=6,sd=3),20))
+  while(min(Drinks)<0) {
+      Drinks <- round(sample(rnorm(10000,mean=6,sd=3),20))
+  }
+  tab5 <- data.frame(sort(Drinks),sort(Grades,decreasing=TRUE))
+@
+
+%% QUESTION 5
+  \question Table~\ref{tab:grades} shows the number of drinks each student
+  had and the grade they got on the exam the next day.
+    \begin{parts}
+      \part[2] What is the median number of drinks?
+        \begin{solution} 
+<<label=tab5s1,echo=FALSE>>=
+median(Drinks)
+@ 
+        \end{solution}
+      \part[2] What is the 25th percentile for number of drinks?
+        \begin{solution} 
+<<label=tab5s2,echo=FALSE>>=
+quantile(Drinks,0.25,type=1)
+@ 
+        \end{solution}
+      \part[2] What is the 75th percentile for number of drinks?
+        \begin{solution} 
+<<label=tab5s3,echo=FALSE>>=
+quantile(Drinks,0.75,type=1)
+@ 
+        \end{solution}
+      \part[5] What is the variance in the number of drinks?
+        \begin{solution} 
+<<label=tab5s4,echo=FALSE>>=
+var(Grades)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of drinks consumed?
+        \begin{solution} 
+<<label=tab5s5,echo=FALSE>>=
+sd(Drinks)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for number of drinks?
+        \begin{solution} 
+<<label=tab5s6,echo=FALSE>>=
+sd(Drinks) / mean(Drinks)
+@ 
+        \end{solution}
+      \part[5] What is the variance of grades?
+        \begin{solution} 
+<<label=tab5s7,echo=FALSE>>=
+var(Grades)
+@ 
+        \end{solution}
+      \part[2] What is the standard deviation of grades?
+        \begin{solution} 
+<<label=tab5s8,echo=FALSE>>=
+sd(Grades)
+@ 
+        \end{solution}
+      \part[2] What is the coefficient of variance for grades?
+        \begin{solution} 
+<<label=tab5s9,echo=FALSE>>=
+sd(Grades) / mean(Grades)
+@ 
+        \end{solution}
+      \part[1] Which is more variable, drinks or grades?
+        \begin{solution}
+<<label=tab5s10,echo=FALSE>>=
+          ifelse(var(Grades) > var(Drinks),"Grades","Drinks")
+@ 
+        \end{solution}
+      \part[1] Which is more variable \emph{relative to the mean}, drinks
+      or grades?
+        \begin{solution}
+<<label=tab5s11,echo=FALSE>>=
+          ifelse((sd(Grades)/mean(Grades)) > (sd(Drinks)/mean(Drinks)),"Grades","Drinks")
+@ 
+        \end{solution}
+    \end{parts}
+
+%% TABLE 5
+<<label=tab5,echo=FALSE,results=tex>>=
+  colnames(tab5) <- c("Drinks","Grade")
+  print(xtable(tab5, caption = "Number of drinks before a test and grade on next day's test", label = "tab:grades", table.placement = "ht", caption.placement = "top", align="ccc"), include.rownames = FALSE)
+@ 
+
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[h][questions] \end{center}
+\fi
+
+\end{document}

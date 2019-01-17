@@ -1,0 +1,740 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Final Exam } {\ifprintanswers \textbf{Answer Key} \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Final Exam }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+
+%%%%%%%%  Sample space
+
+    \question[2] A creative musician decides to blindly throw sandbags at a
+    piano and record what notes are played.  If you treat this as a random
+    variable, what is the sample space?
+    \begin{solutionordottedlines}[0.3in]
+      All of the notes on a piano.
+    \end{solutionordottedlines}
+
+
+%%%%%%%%  Probabilities
+
+<<label=focus,echo=FALSE>>=
+  students <- data.frame(Focus=sample(c("Arts","Sciences"),250,replace=TRUE,p=c(0.4,0.6)))
+  students$Grade <- "A"
+  students[students$Focus=="Arts",]$Grade <- sample(c("A","B","C","D","F"),nrow(subset(students,Focus=="Arts")),replace=TRUE,p=c(0.15,0.25,0.35,0.25,0.1))
+  students[students$Focus=="Sciences",]$Grade <- sample(c("A","B","C","D","F"),nrow(subset(students,Focus=="Sciences")),replace=TRUE,p=c(0.25,0.35,0.25,0.1,0.05))
+  student.table <- table(students)
+  outcomes <- addmargins(student.table)
+  write.csv(student.table,'data/focus_UNIQUEKEY.csv')
+@ 
+
+
+<<label=tabFull,echo=FALSE,results=tex>>=
+library(xtable)
+  print(xtable(outcomes, caption = "Counts of Arts and Science students with each grade", label = "tab:focus", table.placement = "t", caption.placement = "top", align="|c|ccccc||c|",digits=0), hline.after = c(-1,0,2,2,3))
+@ 
+
+
+    \question A recent survey of students found their focus in college,
+    Arts or Sciences, and their current overall letter grade.  The counts
+    are shown in Table~\ref{tab:focus}.
+    \begin{parts}
+      \part[3] What is the probability that a student has an Arts focus
+      and is getting a C?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=pAC,results=tex,echo=FALSE>>=
+  paste(outcomes['Arts','C'],"/",outcomes['Sum','Sum']," = ",outcomes['Arts','C']/outcomes['Sum','Sum'])
+@ 
+      \end{solutionordottedlines}
+      \part[3] What is the (marginal) probability that a student is getting a B?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=pXC,results=tex,echo=FALSE>>=
+  paste(outcomes['Sum','B'],"/",outcomes['Sum','Sum']," = ",outcomes['Sum','B']/outcomes['Sum','Sum'])
+@ 
+      \end{solutionordottedlines}
+      \part[3] What is the (conditional) probability that a student is getting a B
+      \emph{given they have a Sciences focus}?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=pBgS,results=tex,echo=FALSE>>=
+  paste(outcomes['Sciences','B'],"/",outcomes['Sciences','Sum']," = ",outcomes['Sciences','B']/outcomes['Sciences','Sum'])
+@ 
+      \end{solutionordottedlines}
+      \part[3] What is the (marginal) probability that a student has an
+      Arts focus?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=pXC,results=tex,echo=FALSE>>=
+  paste(outcomes['Arts','Sum'],"/",outcomes['Sum','Sum'], " = ",outcomes['Arts','Sum']/outcomes['Sum','Sum'])
+@ 
+      \end{solutionordottedlines}
+      \part[3] What is the (conditional) probability that a student has an Arts focus
+      \emph{given they're getting a B}?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=pBgS,results=tex,echo=FALSE>>=
+  paste(outcomes['Arts','B'],"/",outcomes['Sum','B']," = ",outcomes['Arts','B']/outcomes['Sum','B'])
+@ 
+      \end{solutionordottedlines}
+    \end{parts}
+
+    \question If students are receiving the same education regardless of
+    their focus, then the grade they receive should be independent of their
+    focus.  Do a chi-squared test of independence on Table~\ref{tab:focus}.
+    \begin{parts}
+      \part[4] If focus and grades are independent, what would be the
+      expected number of students who had an Arts focus and received a C?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=eAC,results=tex,echo=FALSE>>=
+  paste(outcomes['Arts','Sum'],"*",outcomes['Sum','C'],"/",outcomes['Sum','Sum']," = ",outcomes['Arts','Sum']*outcomes['Sum','C']/outcomes['Sum','Sum'])
+@ 
+      \end{solutionordottedlines}      
+      \part[8] What is the chi-squared statistic for the test of
+      independence?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=chisq,results=tex,echo=FALSE>>=
+stu.chi <-  chisq.test(student.table)
+cat(stu.chi$statistic)
+@ 
+      \end{solutionordottedlines}      
+      \part[2] What are the degrees of freedom?
+      \begin{solutionordottedlines}[0.3in] 
+        (2 - 1) * (5 - 1) = 4
+      \end{solutionordottedlines}      
+      \part[2] What is the critical chi-squared for a Type I error rate of 0.05?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=chisq,results=tex,echo=FALSE>>=
+  qchisq(0.95,4)
+@ 
+      \end{solutionordottedlines}            
+      \part[1] Can you reject the null hypothesis that the students' grades
+      are independent of their focus?
+      \begin{solutionordottedlines}[0.3in] 
+<<label=chisq,results=tex,echo=FALSE>>=
+ ifelse(abs(stu.chi$statistic)>qchisq(0.95,4),"Reject","Do not reject")
+@ 
+      \end{solutionordottedlines}            
+    \end{parts}
+
+%%%%%%%%  Two-sample t-test
+
+
+%
+<<label=colors,echo=FALSE>>=
+Men <- sample(rnorm(10000,-1.5,3),20)
+Women <- sample(rnorm(10000,1.5,3),20)
+write.csv(data.frame(Men,Women),'data/colors_UNIQUEKEY.csv')
+@ 
+%
+
+  \question An article in the magazine \emph{Cosmopolitan} recently claimed
+  that men and women are different in how they remember colors.  A set of
+  20 men and 20 women were shown color swatches, and ten minutes later had
+  to try to identify the original color.  The hue distance from the
+  original (where negative values indicate more blue and positive values
+  indicate more red) was measured for each participant.  On average, men
+  chose colors with an average hue distance of
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  cat(round(mean(Men),3))
+@ 
+ and standard deviation of 
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  cat(round(sd(Men),3))
+@ 
+.  Women chose colors with an average hue distance of 
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  cat(round(mean(Women),3))
+@ 
+ with a standard deviation of 
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  cat(round(sd(Women),3))
+@ 
+.  Assume the variance in the populations are equal.
+  \begin{parts}
+    \part[1] What are the variables in this study?
+    \begin{solutionordottedlines}[0.3in]
+      Gender and hue distance
+    \end{solutionordottedlines}
+    \part[1] What type of variables are they?
+    \begin{solutionordottedlines}[0.3in]
+      Gender is a categorical variable. \\
+      Hue distance is a quantitative variable.
+    \end{solutionordottedlines}
+    \part[1] What is the null hypothesis?
+    \begin{solutionordottedlines}[0.3in]
+      There is no difference in hue distance for men and women.
+    \end{solutionordottedlines}
+    \part[1] What is the alternative hypothesis? 
+    \begin{solutionordottedlines}[0.3in]
+      There is a difference in hue distance for men and women.
+    \end{solutionordottedlines}
+    \part[1] What are the degrees of freedom?
+    \begin{solutionordottedlines}[0.3in]
+      38
+    \end{solutionordottedlines}
+    \part[2] What is the critical t-value for a two-tailed test with Type I error
+    rate ($\alpha$) = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  noquote(qt(0.975,df=38))
+@ 
+    \end{solutionordottedlines}
+    \part[2] What is the critical t-value for a two-tailed test with Type I error
+    rate ($\alpha$) = 0.01?
+    \begin{solutionordottedlines}[0.3in]
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  noquote(qt(0.995,df=38))
+@ 
+    \end{solutionordottedlines}
+    \part[6] What is the t-value for the difference in means?
+    \begin{solutionordottedlines}[0.3in]
+<<label=colorscritt,echo=FALSE,results=tex>>=
+  t.colors <- t.test(Men,Women,alternative="two.sided",var.equal=T)
+  noquote(t.colors$statistic)
+@ 
+    \end{solutionordottedlines}
+    \part[1] Would you reject the null hypothesis with a two-tailed Type I error
+    rate ($\alpha$) = 0.05?
+    \begin{solutionordottedlines}[0.3in]
+<<label=colorscritt,echo=FALSE,results=tex>>=
+noquote(ifelse(t.colors$p.value<0.05,"Yes","No"))
+@ 
+    \end{solutionordottedlines}
+    \part[1] Would you reject the null hypothesis with a two-tailed Type I error
+    rate ($\alpha$) = 0.01?
+    \begin{solutionordottedlines}[0.3in]
+<<label=colorscritt,echo=FALSE,results=tex>>=
+noquote(ifelse(t.colors$p.value<0.01,"Yes","No"))
+@ 
+    \end{solutionordottedlines}
+  \end{parts}
+
+
+%%%%%%%%  ANOVA
+
+%
+<<label=widgets,echo=FALSE>>=
+  Chicago <- sort(round(sample(rnorm(10000),30) * 15 + 95,1),decreasing=T)
+  Miami <- sort(round(sample(rnorm(10000),30) * 20 + 105,1),decreasing=T)
+  Dallas <- sort(round(sample(rnorm(10000),30) * 25 + 95,1),decreasing=T)
+  Topeka <- sort(round(sample(rnorm(10000),30) * 10 + 102,1),decreasing=T)
+  Portland <- sort(round(sample(rnorm(10000),30) * 5 + 100,1),decreasing=T)
+  widget <- data.frame(c(rep("Chicago",30),rep("Miami",30),rep("Dallas",30),rep("Topeka",30),rep("Portland",30)),c(Chicago,Miami,Dallas,Topeka,Portland))
+  names(widget) <- c("Factory","Production")
+  write.csv(widget,'data/widget_UNIQUEKEY.csv')
+  mu.ch <- round(mean(Chicago),2)
+  mu.mi <- round(mean(Miami),2)
+  mu.da <- round(mean(Dallas),2)
+  mu.to <- round(mean(Topeka),2)
+  mu.po <- round(mean(Portland),2)
+  sd.ch <- round(sd(Chicago),2)
+  sd.mi <- round(sd(Miami),2)
+  sd.da <- round(sd(Dallas),2)
+  sd.to <- round(sd(Topeka),2)
+  sd.po <- round(sd(Portland),2)
+@ 
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|llcc|}
+  \hline
+  & Factory & Mean & Std. Dev. \\ 
+  \hline
+  & Chicago &
+<<label=citymeansd,echo=FALSE,results=tex>>=
+  cat(mu.ch)
+@
+&
+<<label=citymeansd,echo=FALSE,results=tex>>=
+  cat(sd.ch)
+@
+\\
+& Miami &
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(mu.mi)
+@
+&
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(sd.mi)
+@
+\\
+& Dallas &
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(mu.da)
+@
+&
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(sd.da)
+@
+\\
+& Topeka &
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(mu.to)
+@
+&
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(sd.to)
+@
+\\
+& Portland &
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(mu.po)
+@
+&
+<<label=citymeansd,echo=FALSE,results=tex>>=
+cat(sd.po)
+@
+\\
+\hline
+\end{tabular}
+\caption{Average and standard deviation of daily production}
+\label{tab:widget}
+\end{center}
+\end{table}
+
+
+\question A manager of a company with factories located around the U.S. is
+interested in whether the factories have different levels of outoput.  She
+chooses thirty days out of the year, and monitors the output of each of the
+companies. The factory, average output per day, and standard deviation of
+the output over the 30 days is shown in Table~\ref{tab:widget}.
+
+\begin{parts}
+  \part[6] What is the grand mean return for all investment types in the sample?
+  \begin{solutionordottedlines}[0.3in]
+<<label=grandmean,echo=FALSE,results=tex>>=
+  gm <- round(mean(widget$Production),3)
+  noquote(gm)
+@ 
+  \end{solutionordottedlines}
+  \part[8] What is the between-groups sum of squared deviations?
+  \begin{solutionordottedlines}[0.3in]
+<<label=ssb,echo=FALSE,results=tex>>=
+  SSB <- 30*((mu.ch-gm)^2 + (mu.mi-gm)^2 + (mu.da-gm)^2 + (mu.to-gm)^2 + (mu.po-gm)^2)/4
+  noquote(SSB)
+@ 
+  \end{solutionordottedlines}
+  \part[8] What is the within-groups sum of squared deviations?
+  \begin{solutionordottedlines}[0.3in]
+<<label=ssw,echo=FALSE,results=tex>>=
+  SSW <- 29*(sd.ch^2 + sd.mi^2 + sd.da^2 + sd.to^2 + sd.po^2)/(nrow(widget)-5)
+  noquote(SSW)
+@ 
+  \end{solutionordottedlines}
+  \part[3] What is the F-statistic for this analysis of variance (ANOVA)?
+  \begin{solutionordottedlines}[0.3in]
+<<label=ssw,echo=FALSE,results=tex>>=
+  noquote(SSB/SSW)
+@ 
+  \end{solutionordottedlines}
+  \part[2] What are the degrees of freedom (numerator, denominator) for
+  this ANOVA?
+  \begin{solutionordottedlines}[0.3in]
+<<label=widgetdf,echo=FALSE,results=tex>>=
+  cat(paste("4, ",(nrow(widget)-5)))
+@ 
+  \end{solutionordottedlines}
+  \part[2] What is the critical F-vaue for those degrees of freedom?
+  \begin{solutionordottedlines}[0.3in]
+<<label=widgetcrit,echo=FALSE,results=tex>>=
+  noquote(qf(0.95,4,(nrow(widget)-5)))
+@ 
+  \end{solutionordottedlines}
+  \part[1] Can you reject the null hypothesis?
+  \begin{solutionordottedlines}[0.3in]
+<<label=chisq,results=tex,echo=FALSE>>=
+ ifelse(SSB/SSW>qf(0.95,4,(nrow(widget)-5)),"Reject","Do not reject")
+@ 
+  \end{solutionordottedlines}
+\end{parts}
+
+%%%%%%%%  Correlation & Regression
+
+%
+<<label=church,echo=FALSE>>=
+rho <- 0.85
+zB <- sort(sample(rnorm(10000),12))
+zC <- rho*zB + sqrt( 1 - rho^2 )*sample(rnorm(10000),12)
+Bars <- round(zB * 5 + 30,0)
+Churches <- round(zC * 4 + 20,0)
+mu.b <- round(mean(Bars),2)
+mu.c <- round(mean(Churches),2)
+sd.b <- round(sd(Bars),3)
+sd.c <- round(sd(Churches),3)
+church <- data.frame(CountyID=sample(1000:9999,12),Bars,Churches)
+church <- church[with(church, order(CountyID)),]
+church.full <- transform(church, "B.resid"=round(Bars-mu.b,2), "C.resid"=round(Churches-mu.c,2))
+church.full <- transform(church.full, "product"=round(B.resid*C.resid,2))
+cov.church <- sum(church.full$product)/(nrow(church.full)-1)
+cor.church <- cov.church/(sd.b*sd.c)
+
+church.table <- church.full
+church.table[9:12,"B.resid"] <- rep.int("",4)
+church.table[9:12,"C.resid"] <- rep.int("",4)
+church.table[9:12,"product"] <- rep.int("",4)
+write.csv(church,'data/church_UNIQUEKEY.csv')
+
+x.church <- church[11,'Churches']
+zx.church <- (x.church - mu.c)/sd.c
+zyhat.bars <- cor.church*zx.church
+yhat.bars <- round(zyhat.bars*sd.b + mu.b,2)
+
+xs <- 10:20
+x.bars <- sample(xs[!xs %in% church$Bars],1)
+zx.bars <- (x.bars - mu.b)/sd.b
+zyhat.church <- cor.church*zx.bars
+yhat.church <- round(zyhat.church*sd.c + mu.c,2)
+@ 
+ 
+  \question It has been widely claimed that the more churches there are in
+  a neighborhood, the more bars there are.  To test this hypothesis, you
+  visit 12 randomly chosen counties in the U.S., and count the number of
+  bars and churches in that county (identified by a random ID).  Across all
+  counties, there were an average of 
+<<label=oilmean,echo=FALSE,results=tex>>=
+  cat(mu.b)
+@ 
+ bars, with a standard deviation of 
+<<label=oilmean,echo=FALSE,results=tex>>=
+  cat(sd.b)
+@ 
+.  The actual counts are shown in Table~\ref{tab:church}.
+
+
+\ifprintanswers
+<<label=tabFull,echo=FALSE,results=tex>>=
+  print(xtable(church.full, caption = "Number of bars and churches in random sample of U.S. counties", label = "tab:church", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = seq(from=-1,to=nrow(church.full),by=1))
+@ 
+\else
+% 
+<<label=tab401k,echo=FALSE,results=tex>>=
+  print(xtable(church.table, caption = "Number of bars and churches in random sample of U.S. counties", label = "tab:church", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = seq(from=-1,to=nrow(church.table),by=1))
+@ 
+\fi
+
+    \begin{parts}
+      \part[3] What is the average number of churches in the sample?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilmean,echo=FALSE,results=tex>>=
+  cat(mu.c)
+@ 
+      \end{solutionordottedlines}
+      \part[10] What is the standard deviation of the churches in the
+      sample?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilsd,echo=FALSE,results=tex>>=
+  cat(sd.c)
+@ 
+      \end{solutionordottedlines}
+      \part[6] Table~\ref{tab:church} shows the beginnings of the
+      calculation of covariance.  Finish the table.
+      \part[4] What is the covariance between bars and churches?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilsd,echo=FALSE,results=tex>>=
+cov.church <- sum(church.full$product)/(nrow(church.full)-1)
+cat(cov.church)
+@ 
+      \end{solutionordottedlines}
+      \part[4] What is the correlation coefficient between the number of
+      churches and bars?
+      \begin{solutionordottedlines}[0.3in]
+<<label=oilcrimecor,echo=FALSE,results=tex>>=
+cor.church <- cov.church/(sd.b*sd.c)
+cat(cor.church)
+@ 
+      \end{solutionordottedlines}
+    \part[4] Calculate the t-value for the correlation.
+      \begin{solutionordottedlines}[0.3in]
+<<label=corrttest,echo=FALSE,results=tex>>=
+  t.church <- cor.church * sqrt(10) / sqrt(1 - cor.church^2)
+  cat(t.church)
+@ 
+      \end{solutionordottedlines}
+      \part[1] How many degrees of freedom are there?
+      \begin{solutionordottedlines}[0.3in]
+        10
+      \end{solutionordottedlines}
+      \part[2] What is the critical t-value for a two-tailed Type I error rate of 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=corrttest,echo=FALSE,results=tex>>=
+  t.ch.crit <- qt(0.975,10)
+  cat(t.ch.crit)
+@        
+      \end{solutionordottedlines}
+      \part[1] Should you reject the null hypothesis that there is no
+      relationship between the variables with a two-tailed Type I error
+      rate of 0.05?
+      \begin{solutionordottedlines}[0.3in]
+<<label=chisq,results=tex,echo=FALSE>>=
+ ifelse(t.church>t.ch.crit,"Reject","Do not reject")
+@ 
+      \end{solutionordottedlines}
+      \part[1] Based on this result, would you recommend reducing the
+      number of churches in a neighborhood in order to reduce the number of
+      bars in the neighborhood?
+      \begin{solutionordottedlines}[0.3in]
+        No!  Correlation is not causation.
+      \end{solutionordottedlines}
+    \end{parts}
+
+    \question Given the data shown in Table~\ref{tab:church}, you want to
+    predict how many bars or churches there will be in different
+    neighborhoods. In Scarborough county, Maine, there are 
+<<label=chisq,results=tex,echo=FALSE>>=
+  cat(x.church)
+@ 
+ churches.  In Hancock country, Mississippi, there are 
+<<label=chisq,results=tex,echo=FALSE>>=
+  cat(x.bars)
+@ 
+ bars.
+    \begin{parts}
+      \part[2] What is the z-score for the number of churches in
+      Scarborough county?
+      \begin{solutionordottedlines}[0.3in]
+<<label=zchurch,echo=FALSE,results=tex>>=
+   cat(zx.church)
+@ 
+      \end{solutionordottedlines}
+      \part[2] What is the predicted z-score for the number of bars in
+      Scarborough county?
+      \begin{solutionordottedlines}[0.3in]
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  cat(zyhat.bars)
+@ 
+      \end{solutionordottedlines}
+    \part[4] How many bars would you expect there to be in
+      Scarborough county?
+      \begin{solutionordottedlines}[0.3in]
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  cat(yhat.bars)
+@ 
+      \end{solutionordottedlines}
+    \part[8]   How many churches would you expect there to be in Hancock county?
+      \begin{solutionordottedlines}[0.3in]
+<<label=dietcritt,echo=FALSE,results=tex>>=
+  cat(yhat.church)
+@ 
+      \end{solutionordottedlines}
+    \end{parts}
+
+%%%%%%%%  Autoregression
+
+%
+<<label=401k,echo=FALSE>>=
+  Quake.Tweets <- sample(3:9,1)
+  Quake.Tweets <- c(Quake.Tweets,round(sample(10:30,1)+1.2*Quake.Tweets))
+           for(i in 2:13)
+              {
+                  new.day <- round(sample(10:30,1) + 1.2*Quake.Tweets[i] - 0.5*Quake.Tweets[i-1])
+                    Quake.Tweets <- c(Quake.Tweets,new.day)
+                }
+            quake <- data.frame(Day=1:14,Quake.Tweets)
+            quake <- quake[with(quake,order(-Day)),]
+
+            df.quake <- cbind(quake[1:12,],q.L1=quake[2:13,"Quake.Tweets"],q.L2=quake[3:14,"Quake.Tweets"])
+            nlm.quake <- lm(Quake.Tweets ~ q.L1 + q.L2, df.quake)
+
+            b0 <- round(summary(nlm.quake)$coefficients[1,1],2)
+            b1 <- round(summary(nlm.quake)$coefficients[2,1],2)
+            b2 <- round(summary(nlm.quake)$coefficients[3,1],2)
+            b0.se <- round(summary(nlm.quake)$coefficients[1,2],4)
+            b1.se <- round(summary(nlm.quake)$coefficients[2,2],4)
+            b2.se <- round(summary(nlm.quake)$coefficients[3,2],4)
+            mu.q <- round(mean(df.quake$Quake.Tweets),3)
+            mu.L1 <- round(mean(df.quake$q.L1),3)
+            mu.L2 <- round(mean(df.quake$q.L2),3)
+            sd.q <- round(sd(df.quake$Quake.Tweets),3)
+            sd.L1 <- round(sd(df.quake$q.L1),3)
+            sd.L2 <- round(sd(df.quake$q.L2),3)
+
+            Predicted <- round(b0 + b1*df.quake$q.L1 + b2*df.quake$q.L2,2)
+            Residuals <- round(df.quake$Quake.Tweets - Predicted,2)
+            Sq.Regression <- round((Predicted - mu.q)^2,3)
+            Sq.Residual <- round(Residuals^2,3)
+            preds <- data.frame(Predicted,Residuals,Sq.Regression,Sq.Residual)
+            quake.full <- cbind(df.quake,preds)
+            quake.full <- rbind(quake.full,c(2,quake[13,"Quake.Tweets"],quake[14,"Quake.Tweets"],rep.int("",5)))
+            quake.full <- rbind(quake.full,c(1,quake[14,"Quake.Tweets"],rep.int("",6)))
+            quake.full <- rbind(quake.full, c("Mean:",mu.q,mu.L1,mu.L2,rep.int("",4)))
+            quake.full <- rbind(quake.full, c("SD:",sd.q,sd.L1,sd.L2,rep.int("",4)))
+
+            quake.table <- quake.full
+            quake.table[1:14,"q.L1"] <- rep.int("",14)
+            quake.table[1:14,"q.L2"] <- rep.int("",14)
+            quake.table[10:12,"Predicted"] <- rep.int("",3)
+            quake.table[10:12,"Residuals"] <- rep.int("",3)
+            quake.table[10:12,"Sq.Regression"] <- rep.int("",3)
+            quake.table[10:12,"Sq.Residual"] <- rep.int("",3)
+            
+  write.csv(quake,'data/quake_UNIQUEKEY.csv')
+@ 
+
+
+\ifprintanswers
+<<label=tabquake,echo=FALSE,results=tex>>=
+  print(xtable(quake.full, caption = "Number of tweets about earthquakes in the days following a major quake", label = "tab:quake", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = seq(from=-1,to=nrow(quake.full),by=1))
+@ 
+\else 
+<<label=tabquake,echo=FALSE,results=tex>>=
+  print(xtable(quake.table, caption = "Number of tweets about earthquakes in the days following a major quake", label = "tab:quake", table.placement = "t", caption.placement = "top", align="|c|c|c|c|c|c|c|c|c|"), sanitize.text.function = function(x) {x}, include.rownames = FALSE, hline.after = seq(from=-1,to=nrow(quake.table),by=1))
+@ 
+\fi
+\ifprintanswers
+<<label=tabquakeFit,echo=FALSE,results=tex>>=
+  print(xtable(nlm.quake, caption = "Regression Model", label = "tab:quake-fit", table.placement = "t", caption.placement = "top"))
+@ 
+\else
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+  & Estimate & Std. Error & t value & sig. ? \\ 
+  \hline
+<<label=tabquakeFit,echo=FALSE,results=tex>>=
+  cat(paste("(Intercept) ($b_0$) & ",b0," & ",b0.se," & &"))
+@ 
+\\
+<<label=tabquakeFit,echo=FALSE,results=tex>>=
+  cat(paste("Lag 1 ($b_1$) & ",b1," & ",b1.se," & &"))
+@ 
+\\
+<<label=tabquakeFit,echo=FALSE,results=tex>>=
+  cat(paste("Lag 2 ($b_2$) & ",b2," & ",b2.se," & &")) 
+@ 
+\\
+  \hline
+\end{tabular}
+\caption{Regression Model}
+\label{tab:quake-fit}
+\end{center}
+\end{table}
+\fi
+
+ 
+  \question A researcher is interested in modeling how people share
+  information about sudden events.  She decides to count the number of
+  tweets each day after a major earthquake, as shown in
+  Table~\ref{tab:quake}. 
+  \begin{parts}
+    \part[3] Create two lagged variables based on the time series of tweets.  Keep
+    in mind, the most recent day is at the top of the table.
+    \part[6] Finish calculating the predicted values using the parameters
+    in Table~\ref{tab:quake-fit}.
+    \part[6] Finish calculating the residuals.
+    \part[6] Finish calculating the squared deviations of the model from the
+    average (\emph{Sq.Regression}).
+    \part[6] Finish calculating the squared residuals.
+    \part[2] What is the sum of squares for the regression?
+    \begin{solutionordottedlines}[0.3in]
+<<label=SSreg,echo=FALSE,results=tex>>=
+SSR <- sum(Sq.Regression)
+  noquote(SSR)
+@ 
+    \end{solutionordottedlines}
+    \part[2] What is the sum of squared residuals?
+    \begin{solutionordottedlines}[0.3in]
+<<label=SSres,echo=FALSE,results=tex>>=
+SSE <- sum(Sq.Residual)
+  noquote(SSE)
+@ 
+    \end{solutionordottedlines}
+    \part[1] What are the degrees of freedom for the regression?
+    \begin{solutionordottedlines}[0.3in]
+      2
+    \end{solutionordottedlines}
+    \part[1] What are the degrees of freedom for the residual?
+    \begin{solutionordottedlines}[0.3in]
+      12 - 2 - 1 = 9
+    \end{solutionordottedlines}
+    \part[2] What is the critical F-value for these degrees of freedom?
+    \begin{solutionordottedlines}[0.3in]
+<<label=Fcrit401k,echo=FALSE,results=tex>>=
+  noquote(qf(0.95,2,9))
+@       
+    \end{solutionordottedlines}
+    \part[3] What is the mean squared error of the regression?
+    \begin{solutionordottedlines}[0.3in]
+<<label=MSreg,echo=FALSE,results=tex>>=
+  MSR <- SSR/2
+  noquote(MSR)
+@ 
+    \end{solutionordottedlines}
+    \part[3] What is the mean squared residual error?
+    \begin{solutionordottedlines}[0.3in]
+<<label=MSres,echo=FALSE,results=tex>>=
+MSE <- SSE/9
+  noquote(MSE)
+@ 
+    \end{solutionordottedlines}
+    \part[3] What is the F statistic for this regression?
+    \begin{solutionordottedlines}[0.3in]
+<<label=MSres,echo=FALSE,results=tex>>=
+  noquote(MSR/MSE)
+@ 
+    \end{solutionordottedlines}
+    \part[1] Are the number of tweets on one day significantly predicted by the number of
+    tweets in the two previous days?
+      \begin{solutionordottedlines}[0.3in]
+<<label=chisq,results=tex,echo=FALSE>>=
+ ifelse(MSR/MSE>qf(0.95,2,9),"Significant","Not significant")
+@ 
+      \end{solutionordottedlines}
+    \part[5] What is the goodness-of-fit for this autoregressive
+      model (i.e., $R^2$)?
+    \begin{solutionordottedlines}[0.3in]
+<<label=rsq401k,echo=FALSE,results=tex>>=
+  SSR/(SSR+SSE)
+@ 
+    \end{solutionordottedlines}
+  \end{parts}
+
+  \question You also want to know how well each lagged variable predicts the
+  current value.
+  \begin{parts}
+    \part[6] Calculate the t-value for the intercept and both slopes.
+    \part[2] What is the critical t-value for these slopes?
+    \begin{solutionordottedlines}[0.3in]
+<<label=tcritquake,echo=FALSE,results=tex>>=
+  noquote(qt(0.975,9))
+@ 
+    \end{solutionordottedlines}
+    \part[3] Which of the parameters ($b_0$,$b_1$,$b_2$) are significantly
+    different from zero?
+    \begin{solutionordottedlines}[0.3in]
+<<label=chisq,results=tex,echo=FALSE>>=
+ ifelse(abs(b0/b0.se)>qt(0.975,9),"b0 sig, ","b0 not sig, ")
+ ifelse(abs(b1/b1.se)>qt(0.975,9),"b1 sig, ","b1 not sig, ")
+ ifelse(abs(b2/b2.se)>qt(0.975,9),"b2 sig","b2 not sig")
+@ 
+    \end{solutionordottedlines}
+
+  \end{parts}
+
+  \question[6] How many tweets about earthquakes would you expect, based on
+  the autogregressive model, for day 15?
+  \begin{solutionordottedlines}[0.3in]
+<<label=predquake,echo=FALSE,results=tex>>=
+  b0 + b1*quake[1,"Quake.Tweets"] + b2*quake[2,"Quake.Tweets"]
+@ 
+  \end{solutionordottedlines}
+
+\newpage
+.
+
+\end{questions}
+
+\begin{center} \gradetable[v][questions] \end{center}
+
+\end{document}

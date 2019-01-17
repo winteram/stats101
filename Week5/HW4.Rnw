@@ -1,0 +1,289 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.5in} 
+ 
+\noprintanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 4 } {\ifprintanswers \textbf{Answer Key} \else
+  Due 10/11 \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Homework 4 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question[2] Give an example of a Bernoulli trial different than the ones
+  covered in class.  What are the possible outcomes?
+
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{rr}
+        \hline
+        Value &  Number of Winners \\
+        \hline
+        \$10 & 300,000  \\
+        \$20 & 117,222 \\
+        \$30  & 39,600 \\
+        \$50 & 18,150 \\
+        \$75 & 12,000 \\
+        \$100 & 10,800 \\
+        \$500 & 1,260\\
+        \$1,000 & 90 \\
+        \$5,000 & 12 \\
+        \$500,000 & 3 \\
+        \hline
+      \end{tabular}
+      \caption{Number of winners for each prize value out of 1,800,000 tickets in
+        ``Money Money Money'' lottery}
+      \label{tab:njlotto}
+    \end{center}
+  \end{table}
+
+  \question New Jersey's ``Money Money Money'' lottery ticket
+  (www.state.nj.us/lottery/instant/ig929.htm) costs
+  \$10, and reports the number of winners for each prize out of 1.8M
+  tickets, as shown in table~\ref{tab:njlotto}
+    \begin{parts}
+      \part[5] What is the expected value of this ticket?
+        \begin{solution}
+          \begin{table}[ht]
+            \begin{center}
+              \begin{tabular}{rrr}
+                \hline
+                Value  & Probability & Product\\
+                \hline
+                \$10 & 0.16667 & 1.6667 \\
+                \$20 & 0.0651 & 1.3025 \\
+                \$30  & 0.022 & 0.66 \\
+                \$50 & 0.0101 & 0.5042 \\
+                \$75 & 0.0067 & 0.5 \\
+                \$100 & 0.006 & 0.06 \\
+                \$500 & 0.0007 & 0.35 \\
+                \$1,000 & 0.00056 & 0.5556 \\
+                \$5,000 & 6.7e-6 & 0.0333 \\
+                \$500,000 & 1.6e-6 & 0.8333 \\
+                \hline
+              \end{tabular}
+              \caption{answers}
+            \end{center}
+          \end{table}
+          E[X] = 6.4656
+        \end{solution}
+      \part[2] What is the difference between the amount one pays for the
+      ticket and the expected value of the ticket?
+        \begin{solution}
+          -3.5344
+        \end{solution}
+    \end{parts}
+
+%
+<<label=lottery2,echo=FALSE>>=
+Value <- c(1,5,10,25,50,100,500,1000,50000,1000000)
+psums1 <- sort(dexp(sample(1:1000,10)/300))
+probs1 <-ceiling(10^7*psums1/Value)
+probs1[probs1>10^3] <- 10*ceiling(probs1[probs1>10^3]/10)
+probs1[probs1>10^4] <- 100*ceiling(probs1[probs1>10^4]/100)
+probs1[probs1>10^5] <- 1000*ceiling(probs1[probs1>10^5]/1000)
+psums2 <- sort(dexp(sample(1:1000,10)/300))
+probs2 <-ceiling(10^7*psums2/Value)
+probs2[probs2>10^3] <- 10*ceiling(probs2[probs2>10^3]/10)
+probs2[probs2>10^4] <- 100*ceiling(probs2[probs2>10^4]/100)
+probs2[probs2>10^5] <- 1000*ceiling(probs2[probs2>10^5]/1000)
+Lottery.A <- probs1
+Lottery.B <- probs2
+lotto1 <- data.frame(Value,Lottery.A,Lottery.B)
+lotto2 <- data.frame(Value,Lottery.A,psums1,Lottery.B,psums2)
+write.csv(data.frame(Value,Lottery.A,psums1,Lottery.B,psums2),'data/Lottery_UNIQUEKEY.csv')
+@ 
+%
+% print(xtable(data.frame(Value,Lottery.A,psums1,Lottery.B,psums2), caption = "Payoffs and number of winners out of 1M people for two lotteries", label = "tab:lotto2solution", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+%
+<<label=lottery2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Value,Lottery.A,Lottery.B), caption = "Payoffs and number of winners out of 1M people for two lotteries", label = "tab:lottery2", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+@ 
+%
+  \question Table~\ref{tab:lottery2} shows the payoffs and probability of
+  winning that payoff for two lotteries.  A ticket in either lottery costs
+  \$5.
+  \begin{parts}
+    \part[5] What is the expected value for each of the lotteries?
+    \begin{solution}
+
+<<label=lottery2solution,echo=FALSE,results=tex>>=
+  print(paste("Lottery A: ", sum(psums1)))
+  print(paste("Lottery B: ", sum(psums2)))
+@ 
+%
+    \end{solution}
+    \part[2] If you had to buy a ticket, which lottery would you play?
+  \end{parts}
+
+  \question So far the Jets have won 2 of the last 4 games.  Assume this is a
+  good estimate for the probability that they will win future games.  There
+  are 12 games left in the season.  
+  \begin{parts}
+    \part[5] What is the probability they will end the season with a total of
+    10 wins?
+    \begin{solution}
+      ${12\choose8}\times0.5^8\times0.5^4=0.1209$
+    \end{solution}
+    \part[5] What is the probability they will lose all of the remaining games?
+    \begin{solution}
+      ${12\choose2}\times0.5^2\times0.5^{10}=0.01611328$
+    \end{solution}
+  \end{parts}
+
+  \question[5] This year the Mets won 77 games and lost 85 games.  You're
+  sure they'll do better next year.  Calculate the win percentage from this
+  year and add 5\%. Using that as your estimate for their probability of
+  winning games next year, what is the probability they will win as many
+  games as the Yankees did this year (97)?
+  \begin{solution}
+    ${162\choose97} * (0.05+(\frac{77}{162}))^{162} *
+    (1 - (0.05+(\frac{77}{162})))^{162 - 97}=0.01089611$
+  \end{solution}
+
+  \question[5] The manufacturer guarantees its product to be highly
+  reliable, assuring the customer that the probability it will break on
+  each use is only 0.1\%.  You use this product 5 times a day.  What is
+  the probability it will break in the next year?
+  \begin{solution}
+    $1 - (0.999)^{365*5}=0.8389$
+  \end{solution}
+
+  \question Imagine that every day the market has 1\% probability of
+  crashing, indepedent of anything else.  
+  \begin{parts}
+    \part[5] What is the probability the market will crash exactly 30 days
+    from now?
+    \begin{solution}
+      $0.99^{29}*0.01=0.00747$
+    \end{solution}
+    \part[5] What is the probability the market will not crash in the next
+    30 days?
+    \begin{solution}
+      $(0.99)^{30}=0.7397$
+    \end{solution}
+  \end{parts}
+
+  \question The points scored by a team in basketball are normally
+  distributed.  The average score is for a team in NBA is roughly 103
+  points, and the standard deviation is about 11 points.  
+  \begin{parts}
+    \part[5] What is the  probability a team will score over 100 points in
+    a game?
+    \begin{solution}
+      0.6075
+    \end{solution}
+    \part[5] What is the (approximate) probability a team will score between 81 and 114
+    points?
+    \begin{solution}
+      $\frac{68.2}{2}+\frac{95.5}{2}=80.35$
+    \end{solution}
+    \part[5] What is the probability a team will score less than 81 points?
+    \begin{solution}
+      $\frac{100-95.5}{2}=2.25$
+    \end{solution}
+  \end{parts}
+
+  \question The number of hours a person works in a day is normally
+  distributed with an average of 8 hours and a standard deviation of 2.2
+  hours.
+  \begin{parts} 
+    \part[5] Out of 1000 people, how many people would one expect to work more
+    than 11 hours a day?
+    \begin{solution}
+      p = 0.0863
+    \end{solution}
+    \part[5] Out of 1000 people, how many people would one expect to work
+    between 6-10 hours a day?
+    \begin{solution}
+      p = 0.6367
+    \end{solution}
+    \part[5] Based on this data, how many hours in a day would someone work if they
+    worked more hours than 99\% of the population?
+    \begin{solution}
+      p = 13.12 hours
+    \end{solution}
+  \end{parts}
+
+%
+<<label=ewoks,echo=FALSE>>=
+Ewoks <- c("Wicket", "Snooch", "Tikki", "Yarnuk", "Theble", "Wendo", "Ulreet", "Gorum",
+"Hawmba", "Yuknuk", "Tookie", "Loowa", "Andet", "Thii", "Woota", "Iipla", "Quay", "Choof",
+"Looshthe", "Marmut")
+Heights <- sort(round(sample(rnorm(10000,mean=36,sd=4),20),1),decreasing=TRUE)
+write.csv(data.frame(Ewoks,Heights),'data/Ewoks_UNIQUEKEY.csv')
+@ 
+%
+<<label=ewoks2table,echo=FALSE,results=tex>>=
+  library(xtable)
+print(xtable(data.frame(Ewoks,Heights), caption = "Heights of a new tribe of Ewoks", label = "tab:ewoks", table.placement = "ht", caption.placement = "top"),include.rownames=FALSE)
+@ 
+%  
+
+  \question While exploring the planet of Endor, Jaina Solo stumbles upon a
+  new tribe of Ewoks, who call themselves Shmeewoks and seem quite
+  different than the other Ewoks she has met.  Jaina knows that the average
+  height of the Ewoks she has already met is 42 inches, with a standard
+  deviation of 4 inches.  She measures the heights of the Shmeewoks,
+  shown in Table~\ref{tab:ewoks}.
+  \begin{parts}
+    \part[4] What is the average height of the Shmeewoks?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+  mean(Heights)
+@ 
+    \end{solution}
+    \part[4] What is the standard deviation of height of the Shmeewoks?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+  sd(Heights)
+@ 
+    \end{solution}
+    \part[4] How many (Shmeewok) standard deviations is the average Ewok from the Shmeewoks?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+  (42 - mean(Heights))/sd(Heights)
+@ 
+    \end{solution}
+    \part[4] How many (Ewok) standard deviations is the average Shmeewok from the Ewoks?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+  (42 - mean(Heights))/4
+@ 
+    \end{solution}
+    \part[4] What is the probability that an Ewok is as short or shorter
+    than the average Shmeewok?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+pnorm(mean(Heights),42,4)
+@ 
+    \end{solution}
+    \part[4] What is the probability that a Shmeewok is as tall or taller
+    than the average Ewok?
+    \begin{solution}
+<<label=ewok1,echo=FALSE>>=
+1 - pnorm(42,mean(Heights),sd(Heights))
+@ 
+    \end{solution}
+  \end{parts}
+  
+  
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}

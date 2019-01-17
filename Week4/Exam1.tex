@@ -1,0 +1,894 @@
+\documentclass[11pt]{exam}
+\usepackage{Sweave}
+\addtolength{\textwidth}{-0.3in} 
+ 
+\printanswers
+\addpoints
+\pointformat{(\thepoints)}
+
+\begin{document}
+
+
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Exam 1 } {\ifprintanswers \textbf{Answer Key} \fi
+  \\ UNIQUEKEY}
+\runningheader{Statistics \\ BT221}{\Large Exam 1 }{\ifprintanswers
+  \textbf{Answer Key} \fi \\ UNIQUEKEY} 
+\headrule 
+\cfoot{\thepage}
+
+\begin{questions}
+
+  \question  A pharmaceutical company is mining their own sales data to
+  understand the popularity and effectiveness of different drugs being sold
+  on the market. The data set records the chemical name of the drug, the
+  commerical name of the drug, the number of purchases, the overall rank of
+  the total sales of the drug, and the average frequency of illness in the
+  drug-taking population compared to the baseline.
+  \begin{parts}
+    \part[1] Is this a primary or secondary data set?
+    \begin{solutionordottedlines}[0.3in]
+      Primary
+    \end{solutionordottedlines}
+    \part[1] What is an elementary unit in this data set?
+    \begin{solutionordottedlines}[0.3in]
+      A drug
+    \end{solutionordottedlines}
+    \part[2] How many variables are there in the data set?
+    \begin{solutionordottedlines}[0.3in]
+      Five
+    \end{solutionordottedlines}
+    \part[2] What is/are the nominal variables?
+    \begin{solutionordottedlines}[0.3in]
+      Chemical name, Commercial name
+    \end{solutionordottedlines}
+    \part[2] What is/are the ordinal variables?
+    \begin{solutionordottedlines}[0.3in]
+      Rank of sales
+    \end{solutionordottedlines}
+    \part[2] What is/are the quantitative variables?
+    \begin{solutionordottedlines}[0.3in]
+      Number of purchases, frequency of illness
+    \end{solutionordottedlines}
+  \end{parts}
+
+  \question A news agency is investigating government waste, using a data
+  set from a watchdog organization that shows the costs in U.S. dollars of
+  every government-funded project, as well as the name of the project, the
+  project's funding agency (e.g., NSF, DoD, etc.), the classification of
+  the project (e.g., military, telecom, etc.), the most recent grade
+  received from the funding agency (e.g., A--F), and the number of patents
+  arising from the project.
+  \begin{parts}
+    \part
+    \begin{subparts}
+      \subpart[1] Is this a primary or secondary data set?
+      \begin{solutionordottedlines}[0.3in]
+        Secondary
+      \end{solutionordottedlines}
+      \subpart[1] What is an elementary unit in this data set?
+      \begin{solutionordottedlines}[0.3in]
+        A government-funded project
+      \end{solutionordottedlines}
+      \subpart[2] How many variables are there in the data set?
+      \begin{solutionordottedlines}[0.3in]
+        Six
+      \end{solutionordottedlines}
+      \subpart[2] What kind of variable is the classification of the project?
+      \begin{solutionordottedlines}[0.3in]
+        Nominal
+      \end{solutionordottedlines}
+      \subpart[2] What kind of variable is the grade from the funding agency?
+      \begin{solutionordottedlines}[0.3in]
+        Ordinal
+      \end{solutionordottedlines}
+      \subpart[2] What kind of variable is the number of patents generated
+      as a result of the project?
+      \begin{solutionordottedlines}[0.3in]
+        Quantitative
+      \end{solutionordottedlines}
+    \end{subparts}
+
+    \part
+    \begin{subparts}
+      \subpart[3] What plot would you use to examine the distribution of
+      project costs?
+      \begin{solutionordottedlines}[0.3in]
+        Box plot or histogram
+      \end{solutionordottedlines}
+      \subpart[3] What plot would you use to show the average cost for each
+      type of project?
+      \begin{solutionordottedlines}[0.3in]
+        Bar chart
+      \end{solutionordottedlines}
+      \subpart[3] How would you illustrate the relationship between the
+      cost of the project and the number of patents generated?
+      \begin{solutionordottedlines}[0.3in]
+        Scatterplot
+      \end{solutionordottedlines}
+      \subpart[2] How would you modify that plot to show the costs and
+      patents for different types of projects?
+      \begin{solutionordottedlines}[0.3in]
+        Use different colors or shapes for the points in the scatterplot
+      \end{solutionordottedlines}
+      \subpart[3] How would you illustrate the relationship between the
+      grade received by the project and its cost?
+      \begin{solutionordottedlines}[0.3in]
+        Line plot
+      \end{solutionordottedlines}
+      \subpart[2] How would you modify that plot to show the costs of
+      projects in each grade level for different types of projects?
+      \begin{solutionordottedlines}[0.3in]
+        Use different colors or linetype for the lines in the line plot
+      \end{solutionordottedlines}
+    \end{subparts}
+  \end{parts}
+
+\newpage
+%
+%
+
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrllrr}
+  \hline
+ID & days & age & gender & politics & msg.sent & msg.received \\ 
+  \hline
+7267 & 94 & 33 & Male & Liberal & 308 & 10 \\ 
+  8230 & 627 & 28 & Female & Conservative & 279 & 6 \\ 
+  1138 & 39 & 23 & Female & Moderate & 265 & 9 \\ 
+  7887 & 376 & 33 & Female & Conservative & 255 & 1 \\ 
+  4992 & 705 & 28 & Female & Liberal & 237 & 10 \\ 
+  6653 & 363 & 24 & Male & Conservative & 169 & 9 \\ 
+  4321 & 337 & 29 & Male & Moderate & 153 & 9 \\ 
+  4738 & 925 & 23 & Female & Conservative & 147 & 2 \\ 
+  4874 & 502 & 28 & Male & Very liberal & 120 & 7 \\ 
+  2528 & 296 & 26 & Male & Very Conservative & 111 & 6 \\ 
+  6144 & 789 & 21 & Male & Very Conservative & 91 & 7 \\ 
+  8700 & 81 & 26 & Male & Very Conservative & 70 & 1 \\ 
+  3739 & 460 & 27 & Female & Liberal & 43 & 9 \\ 
+  2654 & 555 & 28 & Male & Very liberal & 12 & 4 \\ 
+  2268 & 713 & 19 & Female & Conservative & 11 & 2 \\ 
+  4537 & 212 & 26 & Male & Very Conservative & 9 & 6 \\ 
+  9302 & 104 & 31 & Female & Moderate & 8 & 4 \\ 
+  6195 & 601 & 22 & Female & Moderate & 7 & 5 \\ 
+  7466 & 30 & 22 & Female & Moderate & 4 & 7 \\ 
+  1795 & 555 & 25 & Female & Moderate & 2 & 9 \\ 
+   \hline
+\end{tabular}
+\caption{Customers of a dating site}
+\label{tab:okcupid}
+\end{center}
+\end{table}%
+
+  Table~\ref{tab:okcupid} shows data collected by a popular dating site on
+  its customers for the purpose of improving their service.
+  \question
+  \begin{parts}
+    \part[4] What is the average number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 115.05
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[2] What is the median number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 101
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[2] What is the 75th percentile of the number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+75% 
+169 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}        
+    \part[2] What is the 25th percentile of the number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+25% 
+  9 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[1] What is the range of the number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 306
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[1] What is the interquartile range of the number of messages sent?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+75% 
+160 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+
+\newpage
+    \part[10] Draw a boxplot of the number of messages sent, \emph{showing any
+    outliers}. Be sure to label key points in the plot, i.e., label the
+    points with their values).
+    \begin{solutionorbox}[3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] "next highest value: 308"
+\end{Soutput}
+\end{Schunk}
+\includegraphics{Exam1-boxsent}
+    \end{solutionorbox}
+    \part[8] Draw a histogram of the number of messages \emph{received}
+    (not the messages sent!).  There is no need to put the values into bins
+    (in other words, the bin size should be 1).
+    \begin{solutionorbox}[3in]
+\includegraphics{Exam1-histrcvd}
+    \end{solutionorbox}
+    \part[2] What is the modal number of messages \emph{received}?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+9 
+5 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+  \end{parts}
+
+\newpage
+
+
+\ifprintanswers
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+  \hline
+Opponent & Score & $Score - \mu$ & ${(Score - \mu)}^2$ \\ 
+  \hline
+Chicago Bulls & 87 & 16 & 256 \\ 
+   \hline
+Chicago Bulls & 83 & 12 & 144 \\ 
+   \hline
+Minnesota Timberwolves & 82 & 11 & 121 \\ 
+   \hline
+Miami Heat & 82 & 11 & 121 \\ 
+   \hline
+New Jersey Nets & 80 & 9 & 81 \\ 
+   \hline
+Miami Heat & 79 & 8 & 64 \\ 
+   \hline
+New Jersey Nets & 75 & 4 & 16 \\ 
+   \hline
+New Jersey Nets & 74 & 3 & 9 \\ 
+   \hline
+Minnesota Timberwolves & 74 & 3 & 9 \\ 
+   \hline
+New Jersey Nets & 73 & 2 & 4 \\ 
+   \hline
+New Jersey Nets & 70 & -1 & 1 \\ 
+   \hline
+Chicago Bulls & 68 & -3 & 9 \\ 
+   \hline
+Chicago Bulls & 67 & -4 & 16 \\ 
+   \hline
+Minnesota Timberwolves & 66 & -5 & 25 \\ 
+   \hline
+Minnesota Timberwolves & 65 & -6 & 36 \\ 
+   \hline
+Chicago Bulls & 64 & -7 & 49 \\ 
+   \hline
+Minnesota Timberwolves & 63 & -8 & 64 \\ 
+   \hline
+Miami Heat & 60 & -11 & 121 \\ 
+   \hline
+Miami Heat & 58 & -13 & 169 \\ 
+   \hline
+Miami Heat & 50 & -21 & 441 \\ 
+   \hline
+\hline
+ & 71 &  & 1756 \\ 
+   \hline
+\end{tabular}
+\caption{Scores of last 20 Knicks games}
+\label{tab:knicks}
+\end{center}
+\end{table}\else
+%
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|p{3cm}|p{3cm}|}
+  \hline
+Opponent & Score &  &  \\ 
+  \hline
+Chicago Bulls & 87 &  &  \\ 
+   \hline
+Chicago Bulls & 83 &  &  \\ 
+   \hline
+Minnesota Timberwolves & 82 &  &  \\ 
+   \hline
+Miami Heat & 82 &  &  \\ 
+   \hline
+New Jersey Nets & 80 &  &  \\ 
+   \hline
+Miami Heat & 79 &  &  \\ 
+   \hline
+New Jersey Nets & 75 &  &  \\ 
+   \hline
+New Jersey Nets & 74 &  &  \\ 
+   \hline
+Minnesota Timberwolves & 74 &  &  \\ 
+   \hline
+New Jersey Nets & 73 &  &  \\ 
+   \hline
+New Jersey Nets & 70 &  &  \\ 
+   \hline
+Chicago Bulls & 68 &  &  \\ 
+   \hline
+Chicago Bulls & 67 &  &  \\ 
+   \hline
+Minnesota Timberwolves & 66 &  &  \\ 
+   \hline
+Minnesota Timberwolves & 65 &  &  \\ 
+   \hline
+Chicago Bulls & 64 &  &  \\ 
+   \hline
+Minnesota Timberwolves & 63 &  &  \\ 
+   \hline
+Miami Heat & 60 &  &  \\ 
+   \hline
+Miami Heat & 58 &  &  \\ 
+   \hline
+Miami Heat & 50 &  &  \\ 
+   \hline
+\hline
+ &  &  &  \\ 
+   \hline
+\end{tabular}
+\caption{Scores of last 20 Knicks games}
+\label{tab:knicks}
+\end{center}
+\end{table}\fi
+
+  \question As the newly-hired manager of the New York Knicks basketball
+  team, you're interested in how they have been performing recently.
+  Table~\ref{tab:knicks} shows the team's scores over the past 20 games.
+
+    \begin{parts}
+      \part[4] What is the average score?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 71
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+    \part[1] What is the range of scores?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 306
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+      \part[2] What is the median score?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 71.5
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+      \part[2] What is the 75th percentile for score?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+75% 
+ 79 
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+      \part[2] What is the 25th percentile for score?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+25% 
+ 64 
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+    \part[1] What is the interquartile range of scores?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+75% 
+160 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[5] What is the variance of scores?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 92.42105
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[2] What is the standard deviation of scores?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 9.613587
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[3] What is the coefficient of variance for scores?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 0.1354026
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \end{parts}
+
+    \question[3] What is a random variable?
+    \begin{solutionordottedlines}[0.3in]
+      A variable whose outcome is unpredictable
+    \end{solutionordottedlines}
+    \question[3] What is the sample space of a random variable?
+    \begin{solutionordottedlines}[0.3in]
+      The set of all possible outcomes
+    \end{solutionordottedlines}
+    \question[3] You're randomly flipping through the book Neuromancer by William
+    Gibson, closing your eyes and pointing at a word on the page, and
+    writing it down.  What is the sample space for this variable?
+    \begin{solutionordottedlines}[0.3in]
+      All of the words in the book.
+    \end{solutionordottedlines}
+
+%
+
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{llrll}
+  \hline
+names & gender & age & hair & eyes \\ 
+  \hline
+Kelly & Female & 46 & Black & Black \\ 
+  Nicole & Female & 35 & Black & Blue \\ 
+  Ophelia & Female & 37 & Black & Brown \\ 
+  Cindy & Female & 33 & Black & Brown \\ 
+  Vivian & Female & 31 & Blond & Green \\ 
+  Quetzal & Female & 28 & Brown & Black \\ 
+  Jasmine & Female & 26 & Brown & Blue \\ 
+  Rachel & Female & 48 & Brown & Brown \\ 
+  Ursula & Female & 31 & Brown & Brown \\ 
+  Hermione & Female & 26 & Brown & Brown \\ 
+  Ingrid & Female & 32 & Brown & Brown \\ 
+  Elise & Female & 40 & Red & Brown \\ 
+  Michael & Male & 27 & Blond & Brown \\ 
+  Richard & Male & 35 & Brown & Black \\ 
+  Ernest & Male & 30 & Brown & Blue \\ 
+  Xavier & Male & 33 & Brown & Blue \\ 
+  David & Male & 36 & Brown & Brown \\ 
+  Phillip & Male & 36 & Brown & Brown \\ 
+  George & Male & 20 & Brown & Brown \\ 
+  Harry & Male & 30 & Red & Green \\ 
+   \hline
+\end{tabular}
+\caption{Random people at Grand Central Station}
+\label{tab:strangers}
+\end{center}
+\end{table}%
+
+    \question Table~\ref{tab:strangers} shows data collected on every tenth
+    person that walked out of Grand Central Station on a Tuesday
+    afternoon.  Assume this is a random variable.
+    \begin{parts}
+      \part[2] Is the following a subset of brown-haired people?
+\begin{displaymath} S_1=\left\{ Ursula, Phillip, Michael, Hermione \right\}\end{displaymath}      \part[2] Is the following a subset of brown-eyed women?
+\begin{displaymath} S_2=\left\{ Cindy, Ingrid, Rachel \right\}\end{displaymath}
+      \part
+      \begin{subparts}
+        \subpart[2] Is the following a subset of blue-eyed people?
+\begin{displaymath} S_3=\left\{ Xavier, Ernest, Nicole, Jasmine \right\}\end{displaymath}        \subpart[1] Is $S_3$ a \emph{proper} subset of blue-eyed people?
+        \begin{solutionordottedlines}[0.3in]
+          No, there are no elements in the set of blue-eyed people that are
+          not in $S_3$.
+        \end{solutionordottedlines}
+      \end{subparts}
+      \part[3] $H_{black}$ is the set of all black-haired people.  $E_{green}$ is the set of
+      all green-eyed people.  Describe (i.e., list the elements of) the
+      union: $S_4 = H_{black} \cup E_{green}$
+        \begin{solutionordottedlines}[0.3in]
+\begin{displaymath} S_4=\left\{ Kelly, Nicole, Ophelia, Cindy, Vivian, Harry \right\}\end{displaymath}        \end{solutionordottedlines}
+      \part[3] $G_m$ is the set of all males.  $H_{brown}$ is the set of
+      all brown-haired people.  Describe the intersection: $S_5 = G_m \cap H_{brown}$
+        \begin{solutionordottedlines}[0.3in]
+\begin{displaymath} S_5=\left\{ Richard, Ernest, Xavier, David, Phillip, George \right\}\end{displaymath}        \end{solutionordottedlines}
+      \part[3] $G_m$ is the set of all males.  $E_{brown}$ is the set of
+      all brown-eyed people.  Describe the set difference: $S_6 = G_m - E_{brown}$
+        \begin{solutionordottedlines}[0.3in]
+\begin{displaymath} S_6=\left\{ Richard, Ernest, Xavier, Harry \right\}\end{displaymath}        \end{solutionordottedlines}
+      \part[3] $G_m$ is the set of all males.  $E_{brown}$ is the set of
+      all brown-eyed people.  Describe the set difference: $S_7 = E_{brown}
+      - G_m$
+        \begin{solutionordottedlines}[0.3in]
+\begin{displaymath} S_7=\left\{ Ophelia, Cindy, Rachel, Ursula, Hermione, Ingrid, Elise \right\}\end{displaymath}        \end{solutionordottedlines}
+    \end{parts}
+
+    \question[8] Based on Table~\ref{tab:strangers}, create an outcome table
+    for the variables of hair color and eye color.
+\ifprintanswers
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c||c|}
+  \hline
+ & Black & Blue & Brown & Green & Sum \\ 
+  \hline
+Black & 1 & 1 & 2 & 0 & 4 \\ 
+   \hline
+Blond & 0 & 0 & 1 & 1 & 2 \\ 
+   \hline
+Brown & 2 & 3 & 7 & 0 & 12 \\ 
+   \hline
+Red & 0 & 0 & 1 & 1 & 2 \\ 
+   \hline
+\hline
+Sum & 3 & 4 & 11 & 2 & 20 \\ 
+   \hline
+\end{tabular}
+\caption{Outcome Table for eye and hair color}
+\label{tab:outcome1}
+\end{center}
+\end{table}\else
+%
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c||p{1cm}|}
+  \hline
+ & Black & Blond & Brown & Red &   \\ 
+  \hline
+Black &   &   &   &   &   \\ 
+   \hline
+Blue &   &   &   &   &   \\ 
+   \hline
+Brown &   &   &   &   &   \\ 
+   \hline
+Green &   &   &   &   &   \\ 
+   \hline
+\hline
+  &   &   &   &   &   \\ 
+   \hline
+\end{tabular}
+\caption{Outcome Table for eye and hair color}
+\label{tab:outcome1}
+\end{center}
+\end{table}\fi
+\newpage
+    \question[3] What is the law of large numbers?
+    \begin{solutionordottedlines}[0.6in]
+      As the number of samples increases, the relative frequency of
+      outcomes approaches the true probability of the outcome.
+    \end{solutionordottedlines}
+
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:12 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c||c|}
+  \hline
+ & Black & Blue & Brown & Green & Sum \\ 
+  \hline
+Black & 178 & 45 & 143 & 42 & 408 \\ 
+   \hline
+Blond & 10 & 120 & 161 & 94 & 385 \\ 
+   \hline
+Brown & 263 & 132 & 495 & 119 & 1009 \\ 
+   \hline
+Red & 13 & 7 & 58 & 120 & 198 \\ 
+   \hline
+\hline
+Sum & 464 & 304 & 857 & 375 & 2000 \\ 
+   \hline
+\end{tabular}
+\caption{Frequencies of recorded eye and hair color}
+\label{tab:outcome2}
+\end{center}
+\end{table}
+    \question Suppose Table~\ref{tab:outcome2} represents the outcome table
+    for people's hair and eye color after collecting a lot more data.
+    \begin{parts}
+      \part[2] Using the law of large numbers, what is the expected probability of
+      encountering a person with blue eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of blue-eyed people: 304   "[1] "Number of people: 2000   "[1] "Probability: 0.152   "      \end{solutionordottedlines}
+      \part[2] What is the joint probability of encountering a person with red
+      hair and green eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of red-haired, green--eyed people: 120   "[1] "Number of people: 2000   "[1] "Probability: 0.06   "      \end{solutionordottedlines}
+      \part[2] What is the marginal probability of encountering a person with green eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of green--eyed people: 375   "[1] "Number of people: 2000   "[1] "Probability: 0.1875   "      \end{solutionordottedlines}
+      \part[3] What is the conditional probability of encountering a person
+      with red hair given they have green eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of red-haired, green--eyed people: 120   "[1] "Number of green--eyed: 375   "[1] "Probability: 0.32   "      \end{solutionordottedlines}
+      \part[3] What is the conditional probability of encountering a person
+      with black hair given they have blue eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of black-haired, blue--eyed people: 45   "[1] "Number of blue--eyed: 304   "[1] "Probability: 0.148026315789474   "      \end{solutionordottedlines}
+      \part[3] Given a person has black hair, what is the probability they
+      have blue eyes?
+      \begin{solutionordottedlines}[0.3in]
+[1] "Number of black-haired, blue--eyed people: 45   "[1] "Number of black-haired: 408   "[1] "Probability: 0.110294117647059   "      \end{solutionordottedlines}
+      \part[4] Knowing the probability of a person having blue eyes given they
+      have black hair, and the marginal probability of blue eyes, do you
+      believe eye color and hair color are independent?  Why or why not?
+      \begin{solutionordottedlines}[0.3in]
+        They are not independent, because the conditional probability does
+        not equal the marginal probability, i.e., $p(E_{blue} \mid
+        H_{black}) \neq p(E_{blue})$
+      \end{solutionordottedlines}
+    \end{parts}
+    
+    \question[4] The probability that a college student illegaly downloads
+    songs and movies, $p(s \cap m)=0.06$.  Sixty out of 100 students
+    download songs, and 10 out of 100 students download movies.  Are
+    downloading songs and movies independent?
+    \begin{solutionordottedlines}[0.3in]
+      They are independent, because the probability of the intersection
+      equals the product of the probabilities.
+    \end{solutionordottedlines}
+
+\ifprintanswers
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:13 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+Namet & Gender & Age & $Age - \mu$ & ${(Age - \mu)}^2$ \\ 
+  \hline
+Rachel & Female & 48 & 15 & 225 \\ 
+   \hline
+Kelly & Female & 46 & 13 & 169 \\ 
+   \hline
+Elise & Female & 40 & 7 & 49 \\ 
+   \hline
+Ophelia & Female & 37 & 4 & 16 \\ 
+   \hline
+David & Male & 36 & 3 & 9 \\ 
+   \hline
+Phillip & Male & 36 & 3 & 9 \\ 
+   \hline
+Nicole & Female & 35 & 2 & 4 \\ 
+   \hline
+Richard & Male & 35 & 2 & 4 \\ 
+   \hline
+Cindy & Female & 33 & 0 & 0 \\ 
+   \hline
+Xavier & Male & 33 & 0 & 0 \\ 
+   \hline
+Ingrid & Female & 32 & -1 & 1 \\ 
+   \hline
+Vivian & Female & 31 & -2 & 4 \\ 
+   \hline
+Ursula & Female & 31 & -2 & 4 \\ 
+   \hline
+Ernest & Male & 30 & -3 & 9 \\ 
+   \hline
+Harry & Male & 30 & -3 & 9 \\ 
+   \hline
+Quetzal & Female & 28 & -5 & 25 \\ 
+   \hline
+Michael & Male & 27 & -6 & 36 \\ 
+   \hline
+Jasmine & Female & 26 & -7 & 49 \\ 
+   \hline
+Hermione & Female & 26 & -7 & 49 \\ 
+   \hline
+George & Male & 20 & -13 & 169 \\ 
+   \hline
+\hline
+ &  & 33 &  & 840 \\ 
+   \hline
+\end{tabular}
+\caption{Random people at Grand Central Station}
+\label{tab:ages}
+\end{center}
+\end{table}\else
+%
+% latex table generated in R 2.13.0 by xtable 1.5-6 package
+% Mon Sep 26 00:39:13 2011
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|p{3cm}|p{3cm}|}
+  \hline
+Name & Gender & Age &  &  \\ 
+  \hline
+Rachel & Female & 48 &  &  \\ 
+   \hline
+Kelly & Female & 46 &  &  \\ 
+   \hline
+Elise & Female & 40 &  &  \\ 
+   \hline
+Ophelia & Female & 37 &  &  \\ 
+   \hline
+David & Male & 36 &  &  \\ 
+   \hline
+Phillip & Male & 36 &  &  \\ 
+   \hline
+Nicole & Female & 35 &  &  \\ 
+   \hline
+Richard & Male & 35 &  &  \\ 
+   \hline
+Cindy & Female & 33 &  &  \\ 
+   \hline
+Xavier & Male & 33 &  &  \\ 
+   \hline
+Ingrid & Female & 32 &  &  \\ 
+   \hline
+Vivian & Female & 31 &  &  \\ 
+   \hline
+Ursula & Female & 31 &  &  \\ 
+   \hline
+Ernest & Male & 30 &  &  \\ 
+   \hline
+Harry & Male & 30 &  &  \\ 
+   \hline
+Quetzal & Female & 28 &  &  \\ 
+   \hline
+Michael & Male & 27 &  &  \\ 
+   \hline
+Jasmine & Female & 26 &  &  \\ 
+   \hline
+Hermione & Female & 26 &  &  \\ 
+   \hline
+George & Male & 20 &  &  \\ 
+   \hline
+\hline
+ &  &  &  &  \\ 
+   \hline
+\end{tabular}
+\caption{Random people at Grand Central Station}
+\label{tab:ages}
+\end{center}
+\end{table}\fi
+
+  \question Now you're interested in the ages of the people from Grand
+  Central Station.
+
+    \begin{parts}
+      \part[4] What is the average age?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 33
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+    \part[1] What is the range of ages?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+[1] 28
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[2] What is the modal age?
+    \begin{solutionordottedlines}[0.3in]
+\begin{Schunk}
+\begin{Soutput}
+26 
+ 2 
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+      \part[2] What is the median age?
+        \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 32.5
+\end{Soutput}
+\end{Schunk}
+        \end{solutionordottedlines}
+    \part[5] What is the variance of ages?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 44.21053
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[2] What is the standard deviation of ages?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 6.6491
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \part[3] What is the coefficient of variance for ages?
+    \begin{solutionordottedlines}[0.3in] 
+\begin{Schunk}
+\begin{Soutput}
+[1] 0.2014879
+\end{Soutput}
+\end{Schunk}
+    \end{solutionordottedlines}
+    \end{parts}
+
+    \question[3] What is an \emph{event} in probability?
+    \begin{solutionordottedlines}[0.3in] 
+      An event is a subset of the sample space.
+    \end{solutionordottedlines}
+
+    \question Using the observed frequencies, estimate the following:
+    \begin{parts}
+      \part[4] What is the probability that a person at Grand Central
+      Station is older than 30?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of people older than 30:  13 /20"[1] "Probability:  0.65   "    \end{solutionordottedlines}
+      \part[4] What is the probability that a person at Grand Central
+      Station is younger than 35?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of people younger than 35:  12 /20"[1] "Probability:  0.6   "    \end{solutionordottedlines}
+      \part[4] What is the probability that a person at Grand Central
+      Station is exactly 35?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of people exactly 35:  2 /20"[1] "Probability:  0.1   "    \end{solutionordottedlines}
+      \part[4] What is the probability that a person at Grand Central
+      Station is a male younger than 40?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of males younger than 40:  8 /20"[1] "Probability:  0.4   "    \end{solutionordottedlines}
+      \part[5] What is the probability a person at Grand Central is between
+      the age of 18-28 (inclusive)?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of people between 18-28:  5 /20"[1] "Probability:  0.25"    \end{solutionordottedlines}
+      \part[5] Given a person at Grand Central Station is female, what is
+      the probability they are between 25-35 (inclusive)?
+    \begin{solutionordottedlines}[0.3in] 
+[1] "Number of women between 25-35:  8 / 12"[1] "Probability:  0.666666666666667"    \end{solutionordottedlines}
+    \end{parts}
+
+    \bonusquestion[5] The probability that it will rain tomorrow, $p(r)=0.3$.
+    The probability that you will wash your car tomorrow, $p(w)=0.6$.  The
+    probability you will wash your car given it rains tomorrow,
+    $p(w \mid r)=0.02$.  What is the probability it will rain tomorrow if
+    you wash your car?
+    \begin{solutionordottedlines}[0.3in]
+      $p(r \mid w)=\frac{p(w \mid r) \cdot \p(r)}{p(w)}=0.01$
+    \end{solutionordottedlines}
+
+
+\end{questions}
+
+\ifprintanswers
+\begin{center} \gradetable[v][questions] \end{center}
+\fi
+
+\end{document}
