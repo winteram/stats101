@@ -12,11 +12,15 @@
 \fi
 
 \begin{document}
-
-\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
-  \\ BT221}{\Large Homework 1 } {\ifprintanswers \textbf{Answer Key} \fi
+<<label=install_pkgs,echo=FALSE>>=
+list.of.packages <- c("xtable")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+@
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ FPHDR
+  \\ COURSENO}{\Large Homework 1 } {\ifprintanswers \textbf{Answer Key} \fi
   \\ UNIQUEKEY}
-\runningheader{Statistics \\ BT221}{\Large Homework 1 }{\ifprintanswers
+\runningheader{RNHDR \\ BT221}{\Large Homework 1 }{\ifprintanswers
   \textbf{Answer Key} \fi \\ UNIQUEKEY} 
 \headrule 
 \cfoot{\thepage}
@@ -62,7 +66,6 @@
     scale 1 = very easy, 2 = easy, 3 = moderate, 4 = difficult, 5 = very
     difficult.  Is this a quantitative, ordinal, or nominal variable?
     \begin{solution} Ordinal \end{solution}
-
 %
 <<label=sales,echo=FALSE>>=
 Purchases <- sample.int(2000000, size=11, replace=TRUE)
@@ -76,7 +79,6 @@ library(xtable)
 print(xtable(tab1, caption = "Selected Customers and Purchases", label = "tab:264", table.placement = "tbp", caption.placement = "top"))
 @ 
 %
-
   \question Table~\ref{tab:264} is an excerpt from a
   salesperson's database of customers.
     \begin{parts}
@@ -121,8 +123,6 @@ mean(Purchases)
 @ 
         \end{solution}
     \end{parts}
-
-
 %
 <<label=vacuum,echo=FALSE>>=
 Price <- sample.int(35, size=8, replace=TRUE) * 10
@@ -137,7 +137,6 @@ library(xtable)
 print(xtable(tab2, caption = "Comparison of Upright Vacuums", label = "tab:266", table.placement = "tbp", caption.placement = "top"))
 @ 
 %
-
   \question Table~\ref{tab:266} shows information on a
   selection of household vacuum cleaners.
     \begin{parts}
@@ -188,7 +187,6 @@ mean(Price)
 @ 
         \end{solution}
     \end{parts}
-
 
   \question[10] Find a data set on the internet with at least 10 elementary
   units and three variables, at least one of which is quantitative.  Go to
