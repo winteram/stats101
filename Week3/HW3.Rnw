@@ -12,8 +12,13 @@
 \fi
 
 \begin{document}
+<<label=install_pkgs,echo=FALSE>>=
+list.of.packages <- c("xtable","ggplot2","tidyr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos='http://cran.us.r-project.org')
+@
 
-
+% MODIFY THIS SECTION WITH YOUR COURSE INFO
 \firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
   \\ BT221}{\Large Homework 3 } {\ifprintanswers \textbf{Answer Key} \else
   Due 9/20 \fi
@@ -154,7 +159,9 @@ print(p)
 \begin{figure}
   \begin{center}
 <<label=possalary,fig=TRUE,echo=FALSE>>=
-empl.by.pos <- ddply(Employees, .(Position), summarize, m.salary=mean(Salary), sd.salary=sd(Salary))
+empl.by.pos <- Employees %>%
+  group_by(Position) %>%
+  summarize(m.salary=mean(Salary), sd.salary=sd(Salary))
 p <- ggplot(empl.by.pos, aes(x=Position,y=m.salary)) + geom_bar(fill="white",color="black")
 print(p)
 @

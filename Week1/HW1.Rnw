@@ -15,12 +15,14 @@
 <<label=install_pkgs,echo=FALSE>>=
 list.of.packages <- c("xtable")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+if(length(new.packages)) install.packages(new.packages, repos='http://cran.us.r-project.org')
 @
-\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ FPHDR
-  \\ COURSENO}{\Large Homework 1 } {\ifprintanswers \textbf{Answer Key} \fi
+
+% MODIFY THIS SECTION WITH YOUR COURSE INFO
+\firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
+  \\ BT221}{\Large Homework 1 } {\ifprintanswers \textbf{Answer Key} \fi
   \\ UNIQUEKEY}
-\runningheader{RNHDR \\ BT221}{\Large Homework 1 }{\ifprintanswers
+\runningheader{Statistics \\ BT221}{\Large Homework 1 }{\ifprintanswers
   \textbf{Answer Key} \fi \\ UNIQUEKEY} 
 \headrule 
 \cfoot{\thepage}
@@ -190,8 +192,8 @@ mean(Price)
 
   \question[10] Find a data set on the internet with at least 10 elementary
   units and three variables, at least one of which is quantitative.  Go to
-  http://bit.ly/qt1L6b to see if anyone has already selected that data
-  set.  If not, go to http://bit.ly/oObGms to post your data set so no one
+  [URL for Google spreadsheet] to see if anyone has already selected that data
+  set.  If not, go to [URL for Google spreadsheet] to post your data set so no one
   else will use it.
     \begin{parts}
       \part[2] What is an elementary unit for this data set? 

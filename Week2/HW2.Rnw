@@ -14,12 +14,18 @@
 \fi
 
 \begin{document}
+<<label=install_pkgs,echo=FALSE>>=
+list.of.packages <- c("xtable")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos='http://cran.us.r-project.org')
+@
 
+% MODIFY THIS SECTION WITH YOUR COURSE INFO
 \firstpageheader{Name:\enspace\makebox[2in]{\hrulefill} \\ Statistics
   \\ BT221}{\Large Homework 2 } {\ifprintanswers \textbf{Answer Key} \else
   Due 9/13 \fi
   \\ UNIQUEKEY}
-\runningheader{Statistics \\ BT221}{\Large Homework 1 }{\ifprintanswers
+\runningheader{Statistics \\ BT221}{\Large Homework 2 }{\ifprintanswers
   \textbf{Answer Key} \fi \\ UNIQUEKEY} 
 \headrule 
 \cfoot{\thepage}
